@@ -18,10 +18,13 @@ class ViewController: UIViewController,CLLocationManagerDelegate {
     let goldenRatio = 1.618
     // マップ表示の排他用変数
     var myLock = NSLock()
+
     
 
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var trackingButton: UIButton!
+    
+    
     
     let ImageHeadingUp :UIImage? = UIImage(systemName:"eye")
     let ImageScrollMode :UIImage? = UIImage(systemName:"location.north")
@@ -60,6 +63,9 @@ class ViewController: UIViewController,CLLocationManagerDelegate {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
+        // 地図の初期化
+        initMap()
+        
         locManager = CLLocationManager()   // 変数を初期化
         locManager.delegate = self         // delegateとしてself(自インスタンス)を設定
         
@@ -77,10 +83,6 @@ class ViewController: UIViewController,CLLocationManagerDelegate {
                 break
             }
         }
-        
-        // 地図の初期化
-        initMap()
-        
     }
     
     func initMap() {
@@ -94,6 +96,19 @@ class ViewController: UIViewController,CLLocationManagerDelegate {
         mapView.showsUserLocation = true
         // 現在位置設定（ユーザの位置を中心とする）
         mapView.userTrackingMode = .follow
+        
+
+        
+        let trakingBtn = MKUserTrackingButton(mapView: mapView)
+        trakingBtn.layer.backgroundColor = UIColor(white: 1, alpha: 0.7).cgColor
+        trakingBtn.frame = CGRect(x:40, y:730, width:40, height:40)
+        self.view.addSubview(trakingBtn)
+        
+        // デバイスの画面サイズを取得する
+        let dispSize: CGSize = UIScreen.main.bounds.size
+        let height = Int(dispSize.height)
+        trakingBtn.frame = CGRect(x:15, y:height - 100, width:40, height:40)
+        
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations:[CLLocation]) {
