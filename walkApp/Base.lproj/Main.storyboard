@@ -18,22 +18,12 @@
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="Mkw-bJ-FeI">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                             </mapView>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="KJw-oq-7S5">
-                                <rect key="frame" x="329" y="148" width="30" height="66"/>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gGh-Tm-syE">
+                                <rect key="frame" x="179" y="161" width="38" height="41"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="45"/>
-                                <state key="normal" title="-"/>
+                                <state key="normal" image="location.north.fill" catalog="system"/>
                                 <connections>
-                                    <action selector="buttonZoomout:" destination="BYZ-38-t0r" eventType="touchUpInside" id="H2R-yA-UjG"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jAa-2j-Zyi">
-                                <rect key="frame" x="329" y="106" width="30" height="60"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="40"/>
-                                <state key="normal" title="+"/>
-                                <connections>
-                                    <action selector="buttonZoomIn:" destination="BYZ-38-t0r" eventType="touchUpInside" id="DbA-1T-Y50"/>
+                                    <action selector="trackingBtnThouchUp:" destination="BYZ-38-t0r" eventType="touchUpInside" id="7LY-A8-qhM"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -48,11 +38,15 @@
                     </view>
                     <connections>
                         <outlet property="mapView" destination="Mkw-bJ-FeI" id="SL8-Zn-zIi"/>
+                        <outlet property="trackingButton" destination="gGh-Tm-syE" id="Uw3-hs-Ooc"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="139" y="120"/>
+            <point key="canvasLocation" x="138.40000000000001" y="119.70443349753695"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="location.north.fill" catalog="system" width="54" height="64"/>
+    </resources>
 </document>

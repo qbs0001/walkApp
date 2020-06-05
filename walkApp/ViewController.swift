@@ -21,43 +21,40 @@ class ViewController: UIViewController,CLLocationManagerDelegate {
     
 
     @IBOutlet weak var mapView: MKMapView!
+    @IBOutlet weak var trackingButton: UIButton!
     
-    // 拡大ボタンが押された時
-    @IBAction func buttonZoomIn(_ sender: Any) {
+    let ImageHeadingUp :UIImage? = UIImage(systemName:"eye")
+    let ImageScrollMode :UIImage? = UIImage(systemName:"location.north")
+    let ImageNorthUp :UIImage? = UIImage(systemName:"location.north.fill")
+    
+    @IBAction func trackingBtnThouchUp(_ sender: Any) {
         
-            print("[DBG]clickZoomin")
-//            myLock.lock()
-//            if (mapView.region.span.latitudeDelta * goldenRatio < 150.0) {
-//                print("[DBG]latitudeDelta-1 : " + mapView.region.span.latitudeDelta.description)
-//                var regionSpan:MKCoordinateSpan = MKCoordinateSpan()
-//                regionSpan.latitudeDelta = mapView.region.span.latitudeDelta * goldenRatio
-//        //            regionSpan.latitudeDelta = mapView.region.span.longitudeDelta * GoldenRatio
-//                mapView.region.span = regionSpan
-//                print("[DBG]latitudeDelta-2 : " + mapView.region.span.latitudeDelta.description)
-//            }
-//            myLock.unlock()
+        print("tracking Button Thouch Up!")
+        
+        switch mapView.userTrackingMode {
+        //ノースアップの場合は、ヘディングアップに変更
+        case .follow:
+            mapView.userTrackingMode = .followWithHeading
+            trackingButton.setImage(ImageHeadingUp, for: .normal)
+            break
+        //ヘディングアップの場合は、スクロールに変更
+        case .followWithHeading:
+            mapView.userTrackingMode = .none
+            trackingButton.setImage(ImageScrollMode, for: .normal)
+            break
+        //スクロールの場合は、ノースアップに変更
+        default:
+            mapView.userTrackingMode = .follow
+            trackingButton.setImage(ImageNorthUp, for: .normal)
+            break
+        }
+        
         
     }
     
-    // 縮小ボタンが押された時
-    @IBAction func buttonZoomout(_ sender: Any) {
-        
-        print("[DBG]clickZoomout")
-//        myLock.lock()
-//        if (0.005 < mapView.region.span.latitudeDelta / goldenRatio) {
-//            print("[DBG]latitudeDelta-1 : " + mapView.region.span.latitudeDelta.description)
-//            var regionSpan:MKCoordinateSpan = MKCoordinateSpan()
-//            regionSpan.latitudeDelta = mapView.region.span.latitudeDelta / goldenRatio
-//            mapView.region.span = regionSpan
-//            print("[DBG]latitudeDelta-2 : " + mapView.region.span.latitudeDelta.description)
-//        }
-//        myLock.unlock()
-        
-        
 
-        
-    }
     
+        
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -107,10 +104,23 @@ class ViewController: UIViewController,CLLocationManagerDelegate {
         print("lat : " + latStr)
         
         //updateCurrentPos((locations.last?.coordinate)!)
-        myLock.lock()
+        //myLock.lock()
         // 現在位置設定（ユーザの位置を中心とする）
-        mapView.userTrackingMode = .followWithHeading
-        myLock.unlock()
+        switch mapView.userTrackingMode {
+        
+        //ヘディングアップの場合
+        case .followWithHeading:
+            mapView.userTrackingMode = .followWithHeading
+            break
+        //ノースアップの場合
+        case .follow:
+            mapView.userTrackingMode = .follow
+            break
+        //スクロールの場合
+        default:
+            break
+        }
+        //myLock.unlock()
     }
     
     func updateCurrentPos(_ coordinate:CLLocationCoordinate2D) {
