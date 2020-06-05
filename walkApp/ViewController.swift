@@ -22,38 +22,11 @@ class ViewController: UIViewController,CLLocationManagerDelegate {
     
 
     @IBOutlet weak var mapView: MKMapView!
-    @IBOutlet weak var trackingButton: UIButton!
+
     
     
     
-    let ImageHeadingUp :UIImage? = UIImage(systemName:"eye")
-    let ImageScrollMode :UIImage? = UIImage(systemName:"location.north")
-    let ImageNorthUp :UIImage? = UIImage(systemName:"location.north.fill")
-    
-    @IBAction func trackingBtnThouchUp(_ sender: Any) {
-        
-        print("tracking Button Thouch Up!")
-        
-        switch mapView.userTrackingMode {
-        //ノースアップの場合は、ヘディングアップに変更
-        case .follow:
-            mapView.userTrackingMode = .followWithHeading
-            trackingButton.setImage(ImageHeadingUp, for: .normal)
-            break
-        //ヘディングアップの場合は、スクロールに変更
-        case .followWithHeading:
-            mapView.userTrackingMode = .none
-            trackingButton.setImage(ImageScrollMode, for: .normal)
-            break
-        //スクロールの場合は、ノースアップに変更
-        default:
-            mapView.userTrackingMode = .follow
-            trackingButton.setImage(ImageNorthUp, for: .normal)
-            break
-        }
-        
-        
-    }
+
     
 
     
@@ -63,8 +36,7 @@ class ViewController: UIViewController,CLLocationManagerDelegate {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
-        // 地図の初期化
-        initMap()
+
         
         locManager = CLLocationManager()   // 変数を初期化
         locManager.delegate = self         // delegateとしてself(自インスタンス)を設定
@@ -83,15 +55,20 @@ class ViewController: UIViewController,CLLocationManagerDelegate {
                 break
             }
         }
+        
+        // 地図の初期化
+        initMap()
     }
     
     func initMap() {
         // 縮尺を設定
         var region:MKCoordinateRegion = mapView.region
+        //region.span.latitudeDelta = 0.02
+        //region.span.longitudeDelta = 0.02
         region.span.latitudeDelta = 0.02
         region.span.longitudeDelta = 0.02
         mapView.setRegion(region,animated:true)
-
+        
         // 現在位置表示の有効化
         mapView.showsUserLocation = true
         // 現在位置設定（ユーザの位置を中心とする）
@@ -100,14 +77,22 @@ class ViewController: UIViewController,CLLocationManagerDelegate {
 
         
         let trakingBtn = MKUserTrackingButton(mapView: mapView)
-        trakingBtn.layer.backgroundColor = UIColor(white: 1, alpha: 0.7).cgColor
-        trakingBtn.frame = CGRect(x:40, y:730, width:40, height:40)
-        self.view.addSubview(trakingBtn)
-        
         // デバイスの画面サイズを取得する
         let dispSize: CGSize = UIScreen.main.bounds.size
         let height = Int(dispSize.height)
         trakingBtn.frame = CGRect(x:15, y:height - 100, width:40, height:40)
+        trakingBtn.layer.backgroundColor = UIColor(white: 1, alpha: 0.5).cgColor
+        self.view.addSubview(trakingBtn)
+        
+        let scale = MKScaleView(mapView: mapView)
+        
+        scale.frame.origin.x = 15
+        scale.frame.origin.y = 45
+        scale.legendAlignment = .leading
+        
+        self.view.addSubview(scale)
+        
+        
         
     }
     
@@ -120,21 +105,7 @@ class ViewController: UIViewController,CLLocationManagerDelegate {
         
         //updateCurrentPos((locations.last?.coordinate)!)
         //myLock.lock()
-        // 現在位置設定（ユーザの位置を中心とする）
-        switch mapView.userTrackingMode {
-        
-        //ヘディングアップの場合
-        case .followWithHeading:
-            mapView.userTrackingMode = .followWithHeading
-            break
-        //ノースアップの場合
-        case .follow:
-            mapView.userTrackingMode = .follow
-            break
-        //スクロールの場合
-        default:
-            break
-        }
+
         //myLock.unlock()
     }
     
