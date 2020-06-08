@@ -18,18 +18,34 @@
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="Mkw-bJ-FeI">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                             </mapView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2xy-3F-tq7">
+                                <rect key="frame" x="155" y="719" width="65" height="59"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="26"/>
+                                <state key="normal" image="arrowshape.turn.up.right.circle.fill" catalog="system">
+                                    <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="74"/>
+                                </state>
+                                <connections>
+                                    <action selector="walkButtonTap:" destination="BYZ-38-t0r" eventType="touchUpInside" id="pW6-ei-ary"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
                             <constraint firstAttribute="bottom" secondItem="Mkw-bJ-FeI" secondAttribute="bottom" id="2VX-A0-QcW"/>
+                            <constraint firstItem="2xy-3F-tq7" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="155" id="5EP-w7-mn9"/>
+                            <constraint firstItem="2xy-3F-tq7" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="675" id="BGr-nu-ZMJ"/>
                             <constraint firstItem="Mkw-bJ-FeI" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="HbJ-15-Cs1"/>
                             <constraint firstItem="Mkw-bJ-FeI" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="Uio-5v-JIj"/>
+                            <constraint firstItem="2xy-3F-tq7" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="VBy-cZ-GlP"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="2xy-3F-tq7" secondAttribute="trailing" constant="155" id="aLW-qA-RWa"/>
                             <constraint firstAttribute="trailing" secondItem="Mkw-bJ-FeI" secondAttribute="trailing" id="cst-Gb-qJU"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
+                        <outlet property="WalkButton" destination="2xy-3F-tq7" id="TAK-dy-TGs"/>
                         <outlet property="mapView" destination="Mkw-bJ-FeI" id="SL8-Zn-zIi"/>
+                        <outlet property="walkButton" destination="2xy-3F-tq7" id="3Gp-yw-cWL"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -37,4 +53,7 @@
             <point key="canvasLocation" x="138.40000000000001" y="119.70443349753695"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="arrowshape.turn.up.right.circle.fill" catalog="system" width="64" height="60"/>
+    </resources>
 </document>
