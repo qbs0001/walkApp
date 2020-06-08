@@ -25,19 +25,20 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     var latitudeNow: String = ""
     var longitudeNow: String = ""
     
+    var annotationArray: [MKAnnotation] = []
+    var overlayArray: [MKOverlay] = []
+    
     //座標の配列
-    let coordinatesArray = [
-        ["name":"筑紫駅",    "lat":33.462970,  "lon": 130.553064],
-        ["name":"ローソン",   "lat":33.459531,  "lon": 130.546481],
-        ["name":"地点A",   "lat":33.459396,   "lon": 130.551454],
-        ["name":"筑紫駅",   "lat":33.462970,  "lon": 130.553064]
+    var coordinatesArray = [
+        ["name":"スタート地点（現在地）",    "lat":0,  "lon":0],
+        ["name":"ゴール地点",   "lat":33.459531,  "lon": 130.546481],
+
     ]
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
-
         // 変数を初期化
         locManager = CLLocationManager()
         // delegateとしてself(自インスタンス)を設定
@@ -59,11 +60,31 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         
         // 地図の初期化
         initMap()
-        // delegateとしてself(自インスタンス)を設定
-        self.mapView.delegate = self
-        // 地図を作成
-        makeMap()
+
     }
+    
+      @IBAction func walkButtonTap(_ sender: Any) {
+    
+          print("DBG\(self.latitudeNow)")
+          print("DBG\(self.longitudeNow)")
+        
+        
+        
+        coordinatesArray[0]["lat"] = Double(self.latitudeNow)
+        coordinatesArray[0]["lon"] = Double(self.longitudeNow)
+        
+        coordinatesArray[1]["lat"] = Double(self.latitudeNow)! + Double.random(in: -0.01...0.01)
+        coordinatesArray[1]["lon"] = Double(self.longitudeNow)! + Double.random(in: -0.01...0.01)
+        
+
+
+          // delegateとしてself(自インスタンス)を設定
+          self.mapView.delegate = self
+          // 地図を作成
+          makeMap()
+          
+          
+      }
     
     func makeMap(){
         //マップの表示域を設定
@@ -78,6 +99,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         
         //緯度経度値をもつ構造体を生成（ルート用）
         var routeCoordinates: [CLLocationCoordinate2D] = []
+        
+        //前回設定したピンを削除する
+        self.mapView.removeAnnotations(annotationArray)
+        self.annotationArray = []
+        
         //配列分繰り返す
         for i in 0..<coordinatesArray.count {
             //アノテーションを生成
@@ -90,9 +116,14 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
             annotation.coordinate = annotationCoordinate
             //ルートの地点として登録
             routeCoordinates.append(annotationCoordinate)
+            
+            //削除用にアノテーションを配列に格納する
+            self.annotationArray.append(annotation)
+            
             //マップにピンを立てる
             self.mapView.addAnnotation(annotation)
         }
+        
         //ルート用の変数を生成
         var myRoute: MKRoute!
         //ルート提供をリクエスト
@@ -124,8 +155,29 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
                         myRoute = response?.routes[0]
                         print("DBG距離:\(myRoute.distance)m")
                         print("DBG秒:\(Int(myRoute.expectedTravelTime)/60)分")
+                        
+                        //前回表示したオーバーレイを削除する
+                        self.mapView.removeOverlays(self.overlayArray)
+                        self.overlayArray = []
                         //ルートを描画
                         self.mapView.addOverlay(myRoute.polyline, level: .aboveRoads) //mapViewに絵画
+                        //削除用にオーバーレイを配列に格納する
+                        self.overlayArray.append(myRoute.polyline)
+                        
+                        // 地図をルート全体が表示できるスケールに変更する
+                        let rect = myRoute.polyline.boundingMapRect
+                        //print("DBG:\(MKCoordinateRegion(rect).span)")
+                        //print("DBG:\(Double(MKCoordinateRegion(rect).span.latitudeDelta) * 1.5)")
+                        //self.mapView.setRegion(MKCoordinateRegion(rect), animated: true)
+                        
+                        var region: MKCoordinateRegion = self.mapView.region
+                        //オーバーレイの中心を設定する
+                        region.center = MKCoordinateRegion(rect).center
+                        //ピンが見切れるので、スパンを調整する
+                        region.span.latitudeDelta = Double(MKCoordinateRegion(rect).span.latitudeDelta) * 1.5
+                        region.span.longitudeDelta = Double(MKCoordinateRegion(rect).span.longitudeDelta) * 1.5
+                        //マップを描画する
+                        self.mapView.setRegion(region, animated: true)
                     }
                 })
             }
@@ -141,15 +193,15 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     
     func initMap() {
         // 縮尺を設定
-//        var region: MKCoordinateRegion = mapView.region
-//        region.span.latitudeDelta = 0.02
-//        region.span.longitudeDelta = 0.02
-//        mapView.setRegion(region, animated: true)
+        var region: MKCoordinateRegion = mapView.region
+        region.span.latitudeDelta = 0.01
+        region.span.longitudeDelta = 0.01
+        mapView.setRegion(region, animated: true)
         
         // 現在位置表示の有効化
         mapView.showsUserLocation = true
         // 現在位置設定（ユーザの位置を中心とする）
-        //mapView.userTrackingMode = .follow
+        mapView.userTrackingMode = .follow
         
         let trakingBtn = MKUserTrackingButton(mapView: mapView)
         // デバイスの画面サイズを取得する
@@ -170,15 +222,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     
     
     
-    @IBAction func walkButtonTap(_ sender: Any) {
-  
-        print("DBG\(self.latitudeNow)")
-        print("DBG\(self.longitudeNow)")
 
-        
-        
-        
-    }
     
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
