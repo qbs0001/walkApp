@@ -23,7 +23,7 @@ class SemiModalViewController: UIViewController {
         
         
         label.frame = CGRect(x:150,y:200,width:160,height:30)
-        label.text = "Test"
+        //label.text = "Test"
         self.view.addSubview(label)
         
     }

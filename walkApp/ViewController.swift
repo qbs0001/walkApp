@@ -13,6 +13,7 @@ import FloatingPanel
 
 class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate {
     @IBOutlet weak var walkButton: UIButton!
+    @IBOutlet var mapView: MKMapView!
     // 位置情報
     var locManager: CLLocationManager!
     // 拡大率
@@ -20,7 +21,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     // マップ表示の排他用変数
     var myLock = NSLock()
     
-    @IBOutlet var mapView: MKMapView!
+
     
     //現在地の座標
     var latitudeNow: String = ""
@@ -38,6 +39,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     
     //セミモーダルのクラス変数
     var floatingPanelController: FloatingPanelController!
+    // セミモーダルビューとなるViewControllerを生成し、contentViewControllerとしてセットする
+    let semiModalViewController = SemiModalViewController()
     
     
     override func viewDidLoad() {
@@ -72,8 +75,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         floatingPanelController.delegate = self
         //角を丸くする
         floatingPanelController.surfaceView.cornerRadius = 6.0
-        // セミモーダルビューとなるViewControllerを生成し、contentViewControllerとしてセットする
-        let semiModalViewController = SemiModalViewController()
+
         floatingPanelController.set(contentViewController: semiModalViewController)
         // セミモーダルビューを表示する
         //floatingPanelController.addPanel(toParent: self, belowView: nil, animated: false)
@@ -183,7 +185,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
                         print("DBG距離:\(myRoute.distance)m")
                         print("DBG秒:\(Int(myRoute.expectedTravelTime)/60)分")
                         
-                        
+                        self.semiModalViewController.label.text = "DBG距離:\(myRoute.distance)m"
+                        self.floatingPanelController.set(contentViewController: self.semiModalViewController)
                         
                         //前回表示したオーバーレイを削除する
                         self.mapView.removeOverlays(self.overlayArray)
@@ -309,6 +312,25 @@ extension ViewController: FloatingPanelControllerDelegate {
     func floatingPanel(_ vc: FloatingPanelController, layoutFor newCollection: UITraitCollection) -> FloatingPanelLayout? {
         return CustomFloatingPanelLayout()
     }
+    
+    func floatingPanelDidEndDragging(_ vc: FloatingPanelController, withVelocity velocity: CGPoint, targetPosition: FloatingPanelPosition) {
+
+        // セミモーダルビューの各表示パターンの高さに応じて処理を実行する
+        switch targetPosition {
+        case .tip:
+            print("tip")
+            let dispSize: CGSize = UIScreen.main.bounds.size
+            let height = Int(dispSize.height)
+            let width = Int(dispSize.width)
+            walkButton.frame = CGRect(x: width/2, y: height - 100, width: 40, height: 40)
+        case .half:
+            print("half")
+        case .full:
+            print("full")
+        default: return
+        }
+    }
+    
 }
 
 class CustomFloatingPanelLayout: FloatingPanelLayout {
@@ -335,4 +357,7 @@ class CustomFloatingPanelLayout: FloatingPanelLayout {
     func backdropAlphaFor(position: FloatingPanelPosition) -> CGFloat {
         return 0.0
     }
+    
+
+    
 }
