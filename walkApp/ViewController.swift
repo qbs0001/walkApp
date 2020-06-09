@@ -37,7 +37,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
 
     ]
     
-    //セミモーダルのクラス変数
+    //セミモーダルのクラス変数asa
     var floatingPanelController: FloatingPanelController!
     // セミモーダルビューとなるViewControllerを生成し、contentViewControllerとしてセットする
     let semiModalViewController = SemiModalViewController()
