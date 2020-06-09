@@ -7,6 +7,21 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
+        <!--Semi Modal View Controller-->
+        <scene sceneID="E37-wa-ijN">
+            <objects>
+                <viewController id="cZM-Ey-CrN" customClass="SemiModalViewController" customModule="walkApp" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="Qv2-fI-5Hw">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <viewLayoutGuide key="safeArea" id="6iq-Lw-QC9"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="LId-1t-2Zb" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1068" y="120"/>
+        </scene>
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
@@ -19,7 +34,11 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                             </mapView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2xy-3F-tq7">
-                                <rect key="frame" x="155" y="719" width="65" height="59"/>
+                                <rect key="frame" x="155" y="697" width="65" height="65"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="65" id="VEW-h1-1AT"/>
+                                    <constraint firstAttribute="width" constant="65" id="vSa-7R-Hne"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="26"/>
                                 <state key="normal" image="arrowshape.turn.up.right.circle.fill" catalog="system">
                                     <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="74"/>
@@ -33,10 +52,9 @@
                         <constraints>
                             <constraint firstAttribute="bottom" secondItem="Mkw-bJ-FeI" secondAttribute="bottom" id="2VX-A0-QcW"/>
                             <constraint firstItem="2xy-3F-tq7" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="155" id="5EP-w7-mn9"/>
-                            <constraint firstItem="2xy-3F-tq7" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="675" id="BGr-nu-ZMJ"/>
                             <constraint firstItem="Mkw-bJ-FeI" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="HbJ-15-Cs1"/>
+                            <constraint firstAttribute="bottom" secondItem="2xy-3F-tq7" secondAttribute="bottom" constant="50" id="Loh-aA-eoX"/>
                             <constraint firstItem="Mkw-bJ-FeI" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="Uio-5v-JIj"/>
-                            <constraint firstItem="2xy-3F-tq7" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="VBy-cZ-GlP"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="2xy-3F-tq7" secondAttribute="trailing" constant="155" id="aLW-qA-RWa"/>
                             <constraint firstAttribute="trailing" secondItem="Mkw-bJ-FeI" secondAttribute="trailing" id="cst-Gb-qJU"/>
                         </constraints>

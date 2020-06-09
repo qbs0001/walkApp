@@ -3,10 +3,11 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		26277E03248F10730020644C /* SemiModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26277E02248F10730020644C /* SemiModalViewController.swift */; };
 		26DD0986248797D3007B0B02 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26DD0985248797D3007B0B02 /* AppDelegate.swift */; };
 		26DD0988248797D3007B0B02 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26DD0987248797D3007B0B02 /* SceneDelegate.swift */; };
 		26DD098A248797D3007B0B02 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26DD0989248797D3007B0B02 /* ViewController.swift */; };
@@ -17,6 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		26277E02248F10730020644C /* SemiModalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SemiModalViewController.swift; sourceTree = "<group>"; };
 		26DD0982248797D3007B0B02 /* walkApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = walkApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		26DD0985248797D3007B0B02 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		26DD0987248797D3007B0B02 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -48,7 +50,6 @@
 				29CC961C5FCC01D6AD2BAE21 /* Pods-walkApp.debug.xcconfig */,
 				DD7A70AA21286002D1C25098 /* Pods-walkApp.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -77,6 +78,7 @@
 				26DD0987248797D3007B0B02 /* SceneDelegate.swift */,
 				26DD0989248797D3007B0B02 /* ViewController.swift */,
 				26DD098B248797D3007B0B02 /* Main.storyboard */,
+				26277E02248F10730020644C /* SemiModalViewController.swift */,
 				26DD098E248797D5007B0B02 /* Assets.xcassets */,
 				26DD0990248797D5007B0B02 /* LaunchScreen.storyboard */,
 				26DD0993248797D5007B0B02 /* Info.plist */,
@@ -209,6 +211,7 @@
 			files = (
 				26DD098A248797D3007B0B02 /* ViewController.swift in Sources */,
 				26DD0986248797D3007B0B02 /* AppDelegate.swift in Sources */,
+				26277E03248F10730020644C /* SemiModalViewController.swift in Sources */,
 				26DD0988248797D3007B0B02 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
