@@ -47,6 +47,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         
+        let dispSize: CGSize = UIScreen.main.bounds.size
+        let height = Int(dispSize.height)
+        let width = Int(dispSize.width)
+        walkButton.frame = CGRect(x: width/2, y: height - 200, width: 40, height: 40)
+        
         // 変数を初期化
         locManager = CLLocationManager()
         // delegateとしてself(自インスタンス)を設定
