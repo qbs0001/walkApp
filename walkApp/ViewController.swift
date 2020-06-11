@@ -33,6 +33,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         ["name": "ゴール地点", "lat": 0, "lon": 0],
     ]
     
+    //ピンをドラッグした座標
+    var pinDragAnnotationLat: Double!
+    var pinDragAnnotationLon: Double!
+    
     // セミモーダルのクラス変数asa
     var floatingPanelController: FloatingPanelController!
     // セミモーダルビューとなるViewControllerを生成し、contentViewControllerとしてセットする
@@ -96,6 +100,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         mapView.showsUserLocation = true
         // 現在位置設定（ユーザの位置を中心とする）
         mapView.userTrackingMode = .follow
+        
+        //mapView.tintColor = UIColor.green
         
         // トラッキングボタンを定義
         trakingBtn = MKUserTrackingButton(mapView: mapView)
@@ -311,15 +317,36 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
             return nil
         }
         let reuseId = "pin"
-        var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId)
+        var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKMarkerAnnotationView
         if pinView == nil {
             pinView = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
             //pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
-            pinView?.canShowCallout = true // 吹き出しで情報を表示出来るように
+            // 吹き出しで情報を表示
+            pinView?.canShowCallout = true
+            pinView?.isDraggable = true
         } else {
             pinView?.annotation = annotation
+//            self.pinDragAnnotationLat = annotation.coordinate.latitude
+//            self.pinDragAnnotationLon = annotation.coordinate.longitude
         }
         return pinView
+    }
+    
+    public func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, didChange newState: MKAnnotationView.DragState, fromOldState oldState: MKAnnotationView.DragState) {
+        if newState == .ending {
+            
+            if let pinDrop = view.annotation as? MKPointAnnotation {
+                // 現在地からピンをドロップした位置の緯度経度をゴールに設定
+                coordinatesArray[1]["lat"] = pinDrop.coordinate.latitude
+                coordinatesArray[1]["lon"] = pinDrop.coordinate.longitude
+            }
+            //HUDを表示
+            SVProgressHUD.show(withStatus: "ルート探索中")
+            // 地図を作成
+            makeMap()
+            //HUDを非表示
+            SVProgressHUD.dismiss(withDelay: 0.1)
+        }
     }
     
     // ピンを繋げている線の幅や色を調整
