@@ -1,16 +1,20 @@
 PODS:
   - FloatingPanel (1.7.5)
+  - SVProgressHUD (2.2.5)
 
 DEPENDENCIES:
   - FloatingPanel
+  - SVProgressHUD (= 2.2.5)
 
 SPEC REPOS:
   trunk:
     - FloatingPanel
+    - SVProgressHUD
 
 SPEC CHECKSUMS:
   FloatingPanel: bb17fd6fc7ae519f877f7bd30f4f6115a78acf07
+  SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
 
-PODFILE CHECKSUM: 7cbc88b7cf780e2c4fd51a52e757cdd9403e89ed
+PODFILE CHECKSUM: dfb255e30776588734e79269672eed25a5a4099c
 
 COCOAPODS: 1.9.3

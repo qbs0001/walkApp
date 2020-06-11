@@ -7,5 +7,6 @@ target 'walkApp' do
 
   # Pods for walkApp
   pod 'FloatingPanel'
+  pod 'SVProgressHUD','2.2.5'
 
 end

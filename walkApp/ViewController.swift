@@ -10,6 +10,7 @@ import CoreLocation
 import FloatingPanel
 import MapKit
 import UIKit
+import SVProgressHUD
 
 class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate {
     @IBOutlet var walkButton: UIButton!
@@ -147,8 +148,13 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         
         // delegateとしてself(自インスタンス)を設定
         mapView.delegate = self
+        
+        //HUDを表示
+        SVProgressHUD.show(withStatus: "ルート探索中")
         // 地図を作成
         makeMap()
+        //HUDを非表示
+        SVProgressHUD.dismiss(withDelay: 0.1)
     }
     
     func makeMap() {
@@ -179,6 +185,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
             annotation.title = coordinatesArray[i]["name"] as? String
             // 緯度経度をアノテーションに設定
             annotation.coordinate = annotationCoordinate
+            
             // ルートの地点として登録
             routeCoordinates.append(annotationCoordinate)
             
@@ -306,7 +313,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         let reuseId = "pin"
         var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId)
         if pinView == nil {
-            pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
+            pinView = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
+            //pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
             pinView?.canShowCallout = true // 吹き出しで情報を表示出来るように
         } else {
             pinView?.annotation = annotation
@@ -318,7 +326,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         let route: MKPolyline = overlay as! MKPolyline
         let routeRenderer = MKPolylineRenderer(polyline: route)
-        routeRenderer.strokeColor = UIColor(red: 1.00, green: 0.35, blue: 0.30, alpha: 1.0)
+        routeRenderer.strokeColor = UIColor(red: 1.00, green: 0.35, blue: 0.30, alpha: 0.8)
         routeRenderer.lineWidth = 3.0
         return routeRenderer
     }
