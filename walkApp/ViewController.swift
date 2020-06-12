@@ -33,10 +33,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         ["name": "ゴール地点", "lat": 0, "lon": 0],
     ]
     
-    //ピンをドラッグした座標
-    var pinDragAnnotationLat: Double!
-    var pinDragAnnotationLon: Double!
-    
     // セミモーダルのクラス変数asa
     var floatingPanelController: FloatingPanelController!
     // セミモーダルビューとなるViewControllerを生成し、contentViewControllerとしてセットする
@@ -57,6 +53,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         
         // 現在地変数を初期化
         locManager = CLLocationManager()
+        // 現在位置をバックグラウンドでも取得
+        locManager.allowsBackgroundLocationUpdates = true
         // delegateとしてself(自インスタンス)を設定
         locManager.delegate = self
         
@@ -90,6 +88,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     }
     
     func initMap() {
+        
+        // delegateとしてself(自インスタンス)を設定
+        mapView.delegate = self
+        
         // 縮尺を設定
         var region: MKCoordinateRegion = mapView.region
         region.span.latitudeDelta = 0.01
@@ -151,9 +153,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         // 現在地からランダムな位置の緯度経度をゴールに設定
         coordinatesArray[1]["lat"] = Double(latitudeNow)! + Double.random(in: -0.01...0.01)
         coordinatesArray[1]["lon"] = Double(longitudeNow)! + Double.random(in: -0.01...0.01)
-        
-        // delegateとしてself(自インスタンス)を設定
-        mapView.delegate = self
         
         //HUDを表示
         SVProgressHUD.show(withStatus: "ルート探索中")
@@ -312,6 +311,14 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
 //        mapView.setRegion(region, animated: true)
 //    }
     
+    func mapView(_ mapView: MKMapView, didSelect view: MKAnnotationView) {
+        for annotation in mapView.annotations {
+            if let userLocation = annotation as? MKUserLocation {
+                userLocation.title = "スタート地点（現在地）"
+            }
+        }
+    }
+    
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         if annotation is MKUserLocation {
             return nil
@@ -323,11 +330,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
             //pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
             // 吹き出しで情報を表示
             pinView?.canShowCallout = true
+            // ドラッグを可能に
             pinView?.isDraggable = true
         } else {
             pinView?.annotation = annotation
-//            self.pinDragAnnotationLat = annotation.coordinate.latitude
-//            self.pinDragAnnotationLon = annotation.coordinate.longitude
         }
         return pinView
     }
