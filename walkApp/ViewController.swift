@@ -9,16 +9,19 @@
 import CoreLocation
 import FloatingPanel
 import MapKit
-import UIKit
 import SVProgressHUD
+import UIKit
 
 class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate {
     @IBOutlet var walkButton: UIButton!
     @IBOutlet var mapView: MKMapView!
+    // 起動時のスプラッシュ画像と白背景
+    var splashImageView: UIImageView!
+    var splashBackImageView: UIImageView!
     // 位置情報
     var locManager: CLLocationManager!
     // マップ表示の排他用変数
-    //var myLock = NSLock()
+    // var myLock = NSLock()
     // 現在地の座標
     var latitudeNow: String = ""
     var longitudeNow: String = ""
@@ -50,6 +53,31 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        
+        // デバイスの画面サイズを取得する
+        let dispSize: CGSize = UIScreen.main.bounds.size
+        // 画面の高さ
+        let height = Int(dispSize.height)
+        // 画面の幅
+        let width = Int(dispSize.width)
+        
+        // スプラッシュ画像の背景用のimageView作成
+        splashBackImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: width, height: height))
+        // 中央寄せ
+        splashBackImageView.center = view.center
+        // 背景は白色
+        splashBackImageView.backgroundColor = .white
+        // viewに追加
+        view.addSubview(splashBackImageView)
+        
+        // スプラッシュ画像のimageView作成
+        splashImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 120, height: 120))
+        // 中央寄せ
+        splashImageView.center = view.center
+        // 画像を設定
+        splashImageView.image = UIImage(named: "walkButton")
+        // viewに追加
+        view.addSubview(splashImageView)
         
         // 現在地変数を初期化
         locManager = CLLocationManager()
@@ -87,8 +115,36 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         floatingPanelController.addPanel(toParent: self)
     }
     
-    func initMap() {
+    // ビューコントローラの準備完了後に呼び出される
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         
+        // 80%まで縮小させる
+        UIView.animate(withDuration: 0.3,
+                       delay: 1.0,
+                       options: UIView.AnimationOptions.curveEaseOut,
+                       animations: { () in
+                           self.splashImageView.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+                       }, completion: { _ in
+                           
+        })
+        
+        // 8倍まで拡大する
+        UIView.animate(withDuration: 0.2,
+                       delay: 1.3,
+                       options: UIView.AnimationOptions.curveEaseOut,
+                       animations: { () in
+                           self.splashImageView.transform = CGAffineTransform(scaleX: 8.0, y: 8.0)
+                           self.splashImageView.alpha = 0
+                       }, completion: { _ in
+                           // アニメーションが終わったらimageViewを消す
+                           self.splashImageView.removeFromSuperview()
+                           self.splashBackImageView.removeFromSuperview()
+                           
+        })
+    }
+    
+    func initMap() {
         // delegateとしてself(自インスタンス)を設定
         mapView.delegate = self
         
@@ -103,7 +159,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         // 現在位置設定（ユーザの位置を中心とする）
         mapView.userTrackingMode = .follow
         
-        //mapView.tintColor = UIColor.green
+        // mapView.tintColor = UIColor.green
         
         // トラッキングボタンを定義
         trakingBtn = MKUserTrackingButton(mapView: mapView)
@@ -154,11 +210,11 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         coordinatesArray[1]["lat"] = Double(latitudeNow)! + Double.random(in: -0.01...0.01)
         coordinatesArray[1]["lon"] = Double(longitudeNow)! + Double.random(in: -0.01...0.01)
         
-        //HUDを表示
+        // HUDを表示
         SVProgressHUD.show(withStatus: "ルート探索中")
         // 地図を作成
         makeMap()
-        //HUDを非表示
+        // HUDを非表示
         SVProgressHUD.dismiss(withDelay: 0.1)
     }
     
@@ -327,7 +383,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         var pinView = mapView.dequeueReusableAnnotationView(withIdentifier: reuseId) as? MKMarkerAnnotationView
         if pinView == nil {
             pinView = MKMarkerAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
-            //pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
+            // pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: reuseId)
             // 吹き出しで情報を表示
             pinView?.canShowCallout = true
             // ドラッグを可能に
@@ -340,17 +396,16 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     
     public func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, didChange newState: MKAnnotationView.DragState, fromOldState oldState: MKAnnotationView.DragState) {
         if newState == .ending {
-            
             if let pinDrop = view.annotation as? MKPointAnnotation {
                 // 現在地からピンをドロップした位置の緯度経度をゴールに設定
                 coordinatesArray[1]["lat"] = pinDrop.coordinate.latitude
                 coordinatesArray[1]["lon"] = pinDrop.coordinate.longitude
             }
-            //HUDを表示
+            // HUDを表示
             SVProgressHUD.show(withStatus: "ルート探索中")
             // 地図を作成
             makeMap()
-            //HUDを非表示
+            // HUDを非表示
             SVProgressHUD.dismiss(withDelay: 0.1)
         }
     }
