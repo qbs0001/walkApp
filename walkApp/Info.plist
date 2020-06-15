@@ -24,10 +24,6 @@
 	<string></string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>位置情報サービスの利用を許可してください</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>位置情報サービスの利用を許可してください</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>位置情報サービスの利用を許可してください</string>
 	<key>UIApplicationSceneManifest</key>

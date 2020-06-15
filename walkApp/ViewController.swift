@@ -95,6 +95,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
             case .authorizedWhenInUse:
                 // 座標の表示
                 locManager.startUpdatingLocation()
+                // 起動時の座標を設定
+                self.latitudeNow = String((locManager.location?.coordinate.latitude)!)
+                self.longitudeNow = String((locManager.location?.coordinate.longitude)!)
+                
             default:
                 break
             }
@@ -118,7 +122,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     // ビューコントローラの準備完了後に呼び出される
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        
         // 80%まで縮小させる
         UIView.animate(withDuration: 0.3,
                        delay: 1.0,
@@ -128,7 +131,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
                        }, completion: { _ in
                            
         })
-        
         // 8倍まで拡大する
         UIView.animate(withDuration: 0.2,
                        delay: 1.3,
@@ -140,7 +142,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
                            // アニメーションが終わったらimageViewを消す
                            self.splashImageView.removeFromSuperview()
                            self.splashBackImageView.removeFromSuperview()
-                           
         })
     }
     
@@ -189,6 +190,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         // ウォークボタンを丸くする
         walkButton.layer.cornerRadius = 60 * 0.5
         walkButton.clipsToBounds = true
+        //　ウォークボタンタップ時の画像反転を抑制
+        walkButton.adjustsImageWhenHighlighted = false
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -202,6 +205,16 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     @IBAction func walkButtonTap(_ sender: Any) {
         print("DBG\(latitudeNow)")
         print("DBG\(longitudeNow)")
+                
+        UIView.animate(withDuration: 0.1,
+            delay: 0.0,
+            options: UIView.AnimationOptions.curveEaseOut,
+            animations: {() -> Void in
+                self.walkButton.transform = CGAffineTransform(scaleX: 1.00, y: 1.00);
+                self.walkButton.alpha = 1.0
+            },
+            completion: nil
+        )
         
         // 現在地の緯度経度をスタートに設定
         coordinatesArray[0]["lat"] = Double(latitudeNow)
@@ -217,6 +230,41 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         // HUDを非表示
         SVProgressHUD.dismiss(withDelay: 0.1)
     }
+    
+    //ボタンが押された時
+    @IBAction func walkButtonTapDown(_ sender: Any) {
+        
+        if let generator = impactFeedback as? UIImpactFeedbackGenerator {
+            generator.impactOccurred()
+        }
+        
+        UIView.animate(withDuration: 0.3,
+            delay: 0.0,
+            options: UIView.AnimationOptions.curveEaseOut,
+            animations: {() -> Void in
+                self.walkButton.transform = CGAffineTransform(scaleX: 0.80, y: 0.80);
+                self.walkButton.alpha = 0.7
+            },
+            completion: nil
+        )
+    }
+    
+    //　ボタン押下がキャンセルされた時
+    @IBAction func walkButtonTapOutside(_ sender: Any) {
+        
+        UIView.animate(withDuration: 0.1,
+            delay: 0.0,
+            options: UIView.AnimationOptions.curveEaseOut,
+            animations: {() -> Void in
+                self.walkButton.transform = CGAffineTransform(scaleX: 1.00, y: 1.00);
+                self.walkButton.alpha = 1.0
+            },
+            completion: nil
+        )
+        
+    }
+    
+    
     
     func makeMap() {
         // マップの表示域を設定
@@ -418,6 +466,30 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         routeRenderer.lineWidth = 3.0
         return routeRenderer
     }
+    
+    private lazy var impactFeedback: Any? = {
+        //styleは.light, .medium, heavyの３種類がある
+        let generator:UIFeedbackGenerator = UIImpactFeedbackGenerator(style: .medium)
+        generator.prepare()
+        return generator
+        }()
+    
+    private lazy var notificationFeedback: Any? = {
+        let generator: UIFeedbackGenerator = UINotificationFeedbackGenerator()
+        generator.prepare()
+        return generator
+    }()
+    
+    private lazy var selectionFeedback: Any? = {
+        let generator: UIFeedbackGenerator = UISelectionFeedbackGenerator()
+        generator.prepare()
+        return generator
+    }()
+    
+    
+    
+    
+    
 }
 
 // FloatingPanelControllerDelegate を実装してカスタマイズしたレイアウトを返す

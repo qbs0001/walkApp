@@ -42,6 +42,8 @@
                                 </state>
                                 <connections>
                                     <action selector="walkButtonTap:" destination="BYZ-38-t0r" eventType="touchUpInside" id="pW6-ei-ary"/>
+                                    <action selector="walkButtonTapDown:" destination="BYZ-38-t0r" eventType="touchDown" id="wj1-et-29y"/>
+                                    <action selector="walkButtonTapOutside:" destination="BYZ-38-t0r" eventType="touchUpOutside" id="YIa-dU-1iU"/>
                                 </connections>
                             </button>
                         </subviews>
