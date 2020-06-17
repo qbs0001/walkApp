@@ -15,6 +15,12 @@ import UIKit
 class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDelegate {
     @IBOutlet var walkButton: UIButton!
     @IBOutlet var mapView: MKMapView!
+    
+    @IBOutlet weak var sliderLabel: UILabel!
+    @IBOutlet weak var walkSlider: UISlider!
+    
+    
+    
     // 起動時のスプラッシュ画像と白背景
     var splashImageView: UIImageView!
     var splashBackImageView: UIImageView!
@@ -87,7 +93,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         locManager.delegate = self
         
         // 位置情報の使用の許可を得る
-        locManager.requestWhenInUseAuthorization()
+        locManager.requestAlwaysAuthorization()
         // 位置情報の使用が許可された場合
         if CLLocationManager.locationServicesEnabled() {
             switch CLLocationManager.authorizationStatus() {
@@ -98,7 +104,12 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
                 // 起動時の座標を設定
                 self.latitudeNow = String((locManager.location?.coordinate.latitude)!)
                 self.longitudeNow = String((locManager.location?.coordinate.longitude)!)
-                
+            case .authorizedAlways:
+                    // 座標の表示
+                    locManager.startUpdatingLocation()
+                    // 起動時の座標を設定
+                    self.latitudeNow = String((locManager.location?.coordinate.latitude)!)
+                    self.longitudeNow = String((locManager.location?.coordinate.longitude)!)
             default:
                 break
             }
@@ -151,8 +162,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         
         // 縮尺を設定
         var region: MKCoordinateRegion = mapView.region
-        region.span.latitudeDelta = 0.01
-        region.span.longitudeDelta = 0.01
+        region.span.latitudeDelta = 0.025
+        region.span.longitudeDelta = 0.025
         mapView.setRegion(region, animated: true)
         
         // 現在位置表示の有効化
@@ -192,6 +203,13 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         walkButton.clipsToBounds = true
         //　ウォークボタンタップ時の画像反転を抑制
         walkButton.adjustsImageWhenHighlighted = false
+        
+        //　ウォークスライダーの位置
+        walkSlider.frame = CGRect(x: (width * 3 / 4) - 40, y: height - 110, width: 120, height: 60)
+        // スライダーラベルの位置
+        sliderLabel.frame = CGRect(x: (width * 3 / 4) - 40, y: height - 70, width: 120, height: 20)
+        
+        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -223,6 +241,25 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         coordinatesArray[1]["lat"] = Double(latitudeNow)! + Double.random(in: -0.01...0.01)
         coordinatesArray[1]["lon"] = Double(longitudeNow)! + Double.random(in: -0.01...0.01)
         
+        // スライダーの段階に応じたラベルを設定する
+        switch walkSlider.value {
+        case 0:
+            // 現在地からランダムな位置の緯度経度をゴールに設定（短距離）
+            coordinatesArray[1]["lat"] = Double(latitudeNow)! + Double.random(in: -0.01...0.01)
+            coordinatesArray[1]["lon"] = Double(longitudeNow)! + Double.random(in: -0.01...0.01)
+            
+        case 5:
+            // 現在地からランダムな位置の緯度経度をゴールに設定（中距離）
+            coordinatesArray[1]["lat"] = Double(latitudeNow)! + Double.random(in: -0.016...0.016)
+            coordinatesArray[1]["lon"] = Double(longitudeNow)! + Double.random(in: -0.016...0.016)
+            
+        case 10:
+            // 現在地からランダムな位置の緯度経度をゴールに設定（長距離）
+            coordinatesArray[1]["lat"] = Double(latitudeNow)! + Double.random(in: -0.05...0.05)
+            coordinatesArray[1]["lon"] = Double(longitudeNow)! + Double.random(in: -0.05...0.05)
+            
+        default: break
+        }
         // HUDを表示
         SVProgressHUD.show(withStatus: "ルート探索中")
         // 地図を作成
@@ -271,7 +308,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         // マップの中心を配列の一番目に
         let coordinate = CLLocationCoordinate2DMake(coordinatesArray[0]["lat"] as! CLLocationDegrees, coordinatesArray[0]["lon"] as! CLLocationDegrees)
         // マップの範囲
-        let span = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+        let span = MKCoordinateSpan(latitudeDelta: 0.025, longitudeDelta: 0.025)
         // 中心と範囲を設定
         let region = MKCoordinateRegion(center: coordinate, span: span)
         // 反映
@@ -386,6 +423,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
                         
                         self.walkButton.frame = CGRect(x: (width / 2) - 30, y: height - 210, width: 60, height: 60)
                         self.trakingBtn.frame = CGRect(x: 15, y: height - 195, width: 40, height: 40)
+                        //　ウォークスライダーの位置
+                        self.walkSlider.frame = CGRect(x: (width * 3 / 4) - 40, y: height - 210, width: 120, height: 60)
+                        // スライダーラベルの位置
+                        self.sliderLabel.frame = CGRect(x: (width * 3 / 4) - 40, y: height - 170, width: 120, height: 20)
                     }
                 })
             }
@@ -487,8 +528,42 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     }()
     
     
-    
-    
+    @IBAction func sliderValue(_ sender: Any) {
+        
+        // スライダーを３段階にする
+        walkSlider.value = round(walkSlider.value / 5) * 5
+        
+        // マップの中心を配列の一番目に
+        let coordinate = CLLocationCoordinate2DMake(Double(latitudeNow)!, Double(longitudeNow)!)
+        // マップの範囲
+        var span = MKCoordinateSpan(latitudeDelta: 0.016, longitudeDelta: 0.016)
+        
+        // スライダーの段階に応じたラベルを設定する
+        switch walkSlider.value {
+        case 0:  sliderLabel.text = String("Short-Range")
+            // マップの表示域を設定
+            // マップの範囲
+            span = MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+            
+        case 5:  sliderLabel.text = String("Mid-Range")
+            // マップの表示域を設定
+            // マップの範囲
+            span = MKCoordinateSpan(latitudeDelta: 0.016, longitudeDelta: 0.016)
+            
+        case 10: sliderLabel.text = String("Long-Range")
+            // マップの表示域を設定
+            // マップの範囲
+            span = MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+            
+        default: break
+        }
+        
+        // 中心と範囲を設定
+        let region = MKCoordinateRegion(center: coordinate, span: span)
+        // 反映
+        mapView.setRegion(region, animated: true)
+        
+    }
     
 }
 
@@ -510,11 +585,19 @@ extension ViewController: FloatingPanelControllerDelegate {
             // ボタンの位置をtipに調整する
             walkButton.frame = CGRect(x: (width / 2) - 30, y: height - 110, width: 60, height: 60)
             trakingBtn.frame = CGRect(x: 15, y: height - 100, width: 40, height: 40)
+            //　ウォークスライダーの位置
+            walkSlider.frame = CGRect(x: (width * 3 / 4) - 40, y: height - 110, width: 120, height: 60)
+            // スライダーラベルの位置
+            sliderLabel.frame = CGRect(x: (width * 3 / 4) - 40, y: height - 70, width: 120, height: 20)
         case .half:
             print("half")
             // ボタンの位置をhalfに調整する
             walkButton.frame = CGRect(x: (width / 2) - 30, y: height - 210, width: 60, height: 60)
             trakingBtn.frame = CGRect(x: 15, y: height - 195, width: 40, height: 40)
+            //　ウォークスライダーの位置
+            walkSlider.frame = CGRect(x: (width * 3 / 4) - 40, y: height - 210, width: 120, height: 60)
+            // スライダーラベルの位置
+            sliderLabel.frame = CGRect(x: (width * 3 / 4) - 40, y: height - 170, width: 120, height: 20)
         case .full:
             print("full")
         // fullは、現在使わない

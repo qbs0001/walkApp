@@ -46,6 +46,20 @@
                                     <action selector="walkButtonTapOutside:" destination="BYZ-38-t0r" eventType="touchUpOutside" id="YIa-dU-1iU"/>
                                 </connections>
                             </button>
+                            <slider opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="5" minValue="0.0" maxValue="10" translatesAutoresizingMaskIntoConstraints="NO" id="74r-Fp-enW">
+                                <rect key="frame" x="237" y="724" width="118" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <connections>
+                                    <action selector="sliderValue:" destination="BYZ-38-t0r" eventType="valueChanged" id="MKV-xO-Ndt"/>
+                                </connections>
+                            </slider>
+                            <label opaque="NO" userInteractionEnabled="NO" alpha="0.59999999999999998" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Mid-Range" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tkb-a5-oKn">
+                                <rect key="frame" x="270" y="752" width="53" height="26"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="10"/>
+                                <color key="textColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
@@ -59,7 +73,9 @@
                     <connections>
                         <outlet property="WalkButton" destination="2xy-3F-tq7" id="TAK-dy-TGs"/>
                         <outlet property="mapView" destination="Mkw-bJ-FeI" id="SL8-Zn-zIi"/>
+                        <outlet property="sliderLabel" destination="tkb-a5-oKn" id="rir-dt-PtJ"/>
                         <outlet property="walkButton" destination="2xy-3F-tq7" id="3Gp-yw-cWL"/>
+                        <outlet property="walkSlider" destination="74r-Fp-enW" id="Kcg-ew-IIK"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
