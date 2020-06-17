@@ -98,18 +98,13 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         if CLLocationManager.locationServicesEnabled() {
             switch CLLocationManager.authorizationStatus() {
             // 使用中に許可されている場合は、位置情報の取得を開始する。
-            case .authorizedWhenInUse:
+            case .authorizedWhenInUse, .authorizedAlways:
                 // 座標の表示
                 locManager.startUpdatingLocation()
                 // 起動時の座標を設定
                 self.latitudeNow = String((locManager.location?.coordinate.latitude)!)
                 self.longitudeNow = String((locManager.location?.coordinate.longitude)!)
-            case .authorizedAlways:
-                    // 座標の表示
-                    locManager.startUpdatingLocation()
-                    // 起動時の座標を設定
-                    self.latitudeNow = String((locManager.location?.coordinate.latitude)!)
-                    self.longitudeNow = String((locManager.location?.coordinate.longitude)!)
+
             default:
                 break
             }
