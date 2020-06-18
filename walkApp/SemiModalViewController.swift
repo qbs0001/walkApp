@@ -38,7 +38,7 @@ class SemiModalViewController: UIViewController {
         // 文字色
         hosuLabel.textColor = .darkGray
         // フォント
-        hosuLabel.font = UIFont.boldSystemFont(ofSize: 25)
+        hosuLabel.font = UIFont.boldSystemFont(ofSize: 28)
         // 中央揃え
         hosuLabel.textAlignment = .center
         // 幅を文字列とする
