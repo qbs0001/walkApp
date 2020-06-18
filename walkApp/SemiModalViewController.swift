@@ -38,7 +38,7 @@ class SemiModalViewController: UIViewController {
         // 文字色
         hosuLabel.textColor = .darkGray
         // フォント
-        hosuLabel.font = UIFont.boldSystemFont(ofSize: 20)
+        hosuLabel.font = UIFont.boldSystemFont(ofSize: 25)
         // 中央揃え
         hosuLabel.textAlignment = .center
         // 幅を文字列とする
@@ -60,7 +60,7 @@ class SemiModalViewController: UIViewController {
         // 幅は、サブモーダルの真ん中に配置
         let widthGap2 = (width - Float(infoLabel.frame.width)) / 2
         infoLabel.frame = CGRect(x: CGFloat(widthGap2),
-                                 y: 70,
+                                 y: 80,
                                  width: infoLabel.frame.width,
                                  height: infoLabel.frame.height)
     }
