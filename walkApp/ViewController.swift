@@ -335,8 +335,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
 
         }
         
-        // ゴール地点の標高を取得する
-        goalElevation = getElevation(point: CLLocationCoordinate2DMake(coordinatesArray[1]["lat"] as! CLLocationDegrees, coordinatesArray[1]["lon"] as! CLLocationDegrees),annotation: annotation)
+        // スタート地点とゴール地点の標高差を取得する
+        getElevation(startPoint: CLLocationCoordinate2DMake(coordinatesArray[0]["lat"] as! CLLocationDegrees, coordinatesArray[0]["lon"] as! CLLocationDegrees),goalPoint: CLLocationCoordinate2DMake(coordinatesArray[1]["lat"] as! CLLocationDegrees, coordinatesArray[1]["lon"] as! CLLocationDegrees),annotation: annotation)
         
         // ルート用の変数を生成
         var myRoute: MKRoute!
@@ -432,58 +432,122 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     // 標高値の取得
     // 国土地理院「電子国土ポータル」のAPIを使用
     // https://portal.cyberjapan.jp/help/development.html#api
-    func getElevation(point: CLLocationCoordinate2D, annotation: MKPointAnnotation) -> String {
+    func getElevation(startPoint: CLLocationCoordinate2D, goalPoint: CLLocationCoordinate2D,annotation: MKPointAnnotation){
         
-        // 待ち用のセマフォ
-        //semaphore = DispatchSemaphore(value: 0)
-        // HTTPリクエスト設定
-        let add =
-            "https://cyberjapandata2.gsi.go.jp/" +
-            "general/dem/scripts/getelevation.php" +
-            "?lon=\(point.longitude)&lat=\(point.latitude)&outtype=JSON"
-        // URLの作成
-        let url = URL(string: add)
-        // 標高の初期値
-        var elevation: String = "0.0"
-        // URLリクエストの作成
-        let req = URLRequest(url: url! as URL,
-                             cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalCacheData,
-                             timeoutInterval: 3.0)
-        // サーバ非同期接続
-        let res = URLSession.shared.dataTask(with: req) { data, _, _ in
-            guard let data = data else { return }
-            do {
-                // JSONデータ取得
-                let obj = try JSONSerialization.jsonObject(with: data, options: []) as! [String: Any]
-                // JSONから標高を取り出す
-                if let unwrapped = obj["elevation"] {
-                    // 標高が取得できない地点は、ABENDするのでダウンキャストチェックする
-                    if let unwrappedDouble = unwrapped as? Double{
-                        // Any型をDouble側にして、ストリングとして格納する
-                        elevation = String(unwrappedDouble)
-                        print("DBG標高\(elevation)")
-                        // アノテーションに標高を追加する
-                        // TODO 標高差にする
-                        annotation.title = annotation.title! + "\n" + "標高:" + elevation + "m"
-                    } else {
-                        // 取得できなかった時は、標高はハイフンにする
-                        annotation.title = annotation.title! + "\n" + "標高:-----m"
+        // 非同期のグループ作成
+        let dispatchGroup = DispatchGroup()
+        // 非同期実行の準備
+        let dispatchQueue = DispatchQueue(label: "queue", attributes:  .concurrent)
+        
+        var startElevation:Double!
+        var goalElevation :Double!
+        
+        // スタート地点の標高取得の非同期処理
+        dispatchGroup.enter()
+        dispatchQueue.async {
+            // 待ち用のセマフォ
+            //semaphore = DispatchSemaphore(value: 0)
+            // HTTPリクエスト設定
+            let add =
+                "https://cyberjapandata2.gsi.go.jp/" +
+                "general/dem/scripts/getelevation.php" +
+                "?lon=\(startPoint.longitude)&lat=\(startPoint.latitude)&outtype=JSON"
+            // URLの作成
+            let url = URL(string: add)
+            // URLリクエストの作成
+            let req = URLRequest(url: url! as URL,
+                                 cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalCacheData,
+                                 timeoutInterval: 3.0)
+            // サーバ非同期接続
+            let res = URLSession.shared.dataTask(with: req) { data, _, _ in
+                guard let data = data else { return }
+                do {
+                    // JSONデータ取得
+                    let obj = try JSONSerialization.jsonObject(with: data, options: []) as! [String: Any]
+                    // JSONから標高を取り出す
+                    if let unwrapped = obj["elevation"] {
+                        // 標高が取得できない地点は、ABENDするのでダウンキャストチェックする
+                        if let unwrappedDouble = unwrapped as? Double{
+                            startElevation = unwrappedDouble
+                        } else {
+                            // 取得できなかった時は、標高は999.999にする
+                            startElevation = 999.999
+                        }
+                            self.mapView.addAnnotation(annotation)
+                        dispatchGroup.leave()
                     }
-                        self.mapView.addAnnotation(annotation)
+                    
+                } catch let e {
+                    print(e)
                 }
-                
-            } catch let e {
-                print(e)
+                // 待ちセマフォを解除
+                //self.semaphore.signal()
             }
-            // 待ちセマフォを解除
-            //self.semaphore.signal()
+            // 非同期通信を開始
+            res.resume()
         }
-        // 非同期通信を開始
-        res.resume()
-        // 待ちセマフォを設定
-        //self.semaphore.wait()
-        //標高を返却
-        return elevation
+        
+        // ゴール地点の標高取得の非同期処理
+        dispatchGroup.enter()
+        dispatchQueue.async {
+            // 待ち用のセマフォ
+            //semaphore = DispatchSemaphore(value: 0)
+            // HTTPリクエスト設定
+            let add =
+                "https://cyberjapandata2.gsi.go.jp/" +
+                "general/dem/scripts/getelevation.php" +
+                "?lon=\(goalPoint.longitude)&lat=\(goalPoint.latitude)&outtype=JSON"
+            // URLの作成
+            let url = URL(string: add)
+            // URLリクエストの作成
+            let req = URLRequest(url: url! as URL,
+                                 cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalCacheData,
+                                 timeoutInterval: 3.0)
+            // サーバ非同期接続
+            let res = URLSession.shared.dataTask(with: req) { data, _, _ in
+                guard let data = data else { return }
+                do {
+                    // JSONデータ取得
+                    let obj = try JSONSerialization.jsonObject(with: data, options: []) as! [String: Any]
+                    // JSONから標高を取り出す
+                    if let unwrapped = obj["elevation"] {
+                        // 標高が取得できない地点は、ABENDするのでダウンキャストチェックする
+                        if let unwrappedDouble = unwrapped as? Double{
+                            goalElevation = unwrappedDouble
+                        } else {
+                            // 取得できなかった時は、標高は999.999にする
+                            goalElevation = 999.999
+                        }
+                            self.mapView.addAnnotation(annotation)
+                        dispatchGroup.leave()
+                    }
+                    
+                } catch let e {
+                    print(e)
+                }
+                // 待ちセマフォを解除
+                //self.semaphore.signal()
+            }
+            // 非同期通信を開始
+            res.resume()
+        }
+        
+        // ２つの非同期処理が完了したら、標高差を求めて設定する
+        dispatchGroup.notify(queue: .main){
+            
+            if (startElevation == 999.999) || (goalElevation == 999.999) {
+                // 取得できなかった時は、標高差はハイフンにする
+                annotation.title = annotation.title! + "\n" + "標高差:-----m"
+            } else {
+                //スタート地点とゴール地点の標高差を求める（小数点１桁）
+                let elevation = String(round((goalElevation - startElevation)*10) / 10)
+                print("DBG標高差\(elevation)")
+                // アノテーションに標高を追加する
+                annotation.title = annotation.title! + "\n" + "標高差:" + elevation + "m"
+            }
+        }
+        
+        return
     }
     
     // 常に現在地を取得する
@@ -607,6 +671,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
             span = MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
             
         default: break
+        }
+        
+        if let generator = selectionFeedback as? UISelectionFeedbackGenerator {
+            generator.selectionChanged()
         }
         
         // 中心と範囲を設定

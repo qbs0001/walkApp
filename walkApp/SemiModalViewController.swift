@@ -36,7 +36,7 @@ class SemiModalViewController: UIViewController {
         let width = Float(UIScreen.main.bounds.size.width)
 
         // 文字色
-        hosuLabel.textColor = .darkGray
+        hosuLabel.textColor = .systemBlue
         // フォント
         hosuLabel.font = UIFont.boldSystemFont(ofSize: 25)
         // 中央揃え
