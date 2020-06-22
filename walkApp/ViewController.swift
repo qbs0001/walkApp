@@ -57,9 +57,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     var dist: Int = 0
     var kcal: Int = 0
     
-    // 終了ボタン
-    var endButton = UIButton()
-    
     // 待ちセマフォ
     // var semaphore: DispatchSemaphore!
     
@@ -210,31 +207,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         walkSlider.frame = CGRect(x: (width * 3 / 4) - 40, y: height - 110, width: 120, height: 60)
         // スライダーラベルの位置
         sliderLabel.frame = CGRect(x: (width * 3 / 4) - 40, y: height - 70, width: 120, height: 20)
-        
-        
-        // 終了ボタンの位置
-        endButton.frame = CGRect(x: (width * 1 / 17), y: 40, width: 40, height: 40)
-        
-        // 終了ボタンの画像
-        let buttonImage = UIImage(systemName: "xmark.circle.fill")
-        
-        endButton.setImage(buttonImage, for: .normal)
-        endButton.imageView?.contentMode = .scaleAspectFit
-        endButton.contentHorizontalAlignment = .fill
-        endButton.contentVerticalAlignment = .fill
-        
-        // 終了ボタンの色は、赤で半透明
-        endButton.tintColor = (.gray)
-        endButton.alpha = 0.5
-        
-        // 終了ボタン押下時のセレクター
-        endButton.addTarget(self, action: #selector(self.pushEndButton), for: .touchUpInside)
-        
-        // デフォルトは、非表示
-        endButton.isHidden = true
-        // 終了ボタンを画面に追加する
-        view.addSubview(endButton)
-        
         
     }
     
@@ -719,8 +691,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     @objc func pushStartButton(sender: UIButton){
         print("startbutton pushed.")
         
+        // 終了ボタン押下時のセレクター
+        self.semiModalViewController.endButton.addTarget(self, action: #selector(self.pushEndButton), for: .touchUpInside)
         // 決定ボタンが押されたら、終了ボタンを表示
-        endButton.isHidden = false
+        self.semiModalViewController.endButton.isHidden = false
         // 決定ボタンを非表示
         self.semiModalViewController.startButton.isHidden = true
         // ウォークボタンを非表示
@@ -733,7 +707,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         print("endbutton pushed.")
         
         // 終了ボタンが押されたら、終了ボタンを非表示
-        endButton.isHidden = true
+        self.semiModalViewController.endButton.isHidden = true
         // ウォークボタンを表示
         walkButton.isHidden = false
         
@@ -762,7 +736,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         // ボタンの位置をtipに調整する
         walkButton.frame = CGRect(x: (width / 2) - 30, y: height - 110, width: 60, height: 60)
         trakingBtn.frame = CGRect(x: 15, y: height - 100, width: 40, height: 40)
-        // 　ウォークスライダーの位置
+        // ウォークスライダーの位置
         walkSlider.frame = CGRect(x: (width * 3 / 4) - 40, y: height - 110, width: 120, height: 60)
         // スライダーラベルの位置
         sliderLabel.frame = CGRect(x: (width * 3 / 4) - 40, y: height - 70, width: 120, height: 20)

@@ -12,6 +12,7 @@ class SemiModalViewController: UIViewController {
     var hosuLabel = UILabel()
     var infoLabel = UILabel()
     var startButton = UIButton()
+    var endButton = UIButton()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,12 +32,16 @@ class SemiModalViewController: UIViewController {
         view.addSubview(hosuLabel)
         view.addSubview(infoLabel)
         
-        // 決定ボタンの配置
+        // 開始・終了ボタンの配置
         editButton()
         // デフォルトは、非表示
         startButton.isHidden = true
-        // 決定ボタンをサブモーダルに追加する
+        endButton.isHidden = true
+        // 開始ボタンをサブモーダルに追加する
         view.addSubview(startButton)
+        // 終了ボタンをサブモーダルに追加する
+        view.addSubview(endButton)
+        
     }
 
     func editLabel() {
@@ -80,20 +85,23 @@ class SemiModalViewController: UIViewController {
         // 画面の幅
         let width = Int(dispSize.width)
         
-        // 決定ボタンの位置
-        startButton.frame = CGRect(x: (width * 4 / 5) - 20, y: 40, width: 60, height: 60)
-        // 決定ボタンの背景
-        startButton.backgroundColor = .white
+        // 開始ボタンの位置
+        startButton.frame = CGRect(x: (width * 4 / 5) - 10, y: 50, width: 60, height: 40)
+        // 開始ボタンの背景
+        startButton.backgroundColor = .systemBlue
         
-        // 決定ボタンの画像
-        let buttonImage = UIImage(systemName: "checkmark.rectangle.fill")
-        
-        startButton.setImage(buttonImage, for: .normal)
-        startButton.imageView?.contentMode = .scaleAspectFit
-        startButton.contentHorizontalAlignment = .fill
-        startButton.contentVerticalAlignment = .fill
-        
+        startButton.setTitle("出 発", for: .normal)
+        startButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 23)
         startButton.alpha = 0.9
+        
+        // 終了ボタンの位置
+        endButton.frame = CGRect(x: (width * 4 / 5) - 10, y: 50, width: 60, height: 40)
+        // 終了ボタンの背景
+        endButton.backgroundColor = .red
+        
+        endButton.setTitle("終 了", for: .normal)
+        endButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 23)
+        endButton.alpha = 0.7
 
         
     }
