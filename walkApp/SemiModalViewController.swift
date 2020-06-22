@@ -30,8 +30,6 @@ class SemiModalViewController: UIViewController {
         view.addSubview(hosuLabel)
         view.addSubview(infoLabel)
         
-        print("aaa")
-        
     }
 
     func editLabel() {
