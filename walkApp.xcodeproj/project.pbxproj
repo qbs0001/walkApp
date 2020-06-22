@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		26277E07248F330F0020644C /* semiModalViewController2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26277E06248F330F0020644C /* semiModalViewController2.swift */; };
+		26277E07248F330F0020644C /* SemiModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26277E06248F330F0020644C /* SemiModalViewController.swift */; };
 		26DD0986248797D3007B0B02 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26DD0985248797D3007B0B02 /* AppDelegate.swift */; };
 		26DD0988248797D3007B0B02 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26DD0987248797D3007B0B02 /* SceneDelegate.swift */; };
 		26DD098A248797D3007B0B02 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26DD0989248797D3007B0B02 /* ViewController.swift */; };
@@ -18,7 +18,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		26277E06248F330F0020644C /* semiModalViewController2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = semiModalViewController2.swift; sourceTree = "<group>"; };
+		26277E06248F330F0020644C /* SemiModalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SemiModalViewController.swift; sourceTree = "<group>"; };
 		26DD0982248797D3007B0B02 /* walkApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = walkApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		26DD0985248797D3007B0B02 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		26DD0987248797D3007B0B02 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -76,7 +76,7 @@
 			children = (
 				26DD0985248797D3007B0B02 /* AppDelegate.swift */,
 				26DD0987248797D3007B0B02 /* SceneDelegate.swift */,
-				26277E06248F330F0020644C /* semiModalViewController2.swift */,
+				26277E06248F330F0020644C /* SemiModalViewController.swift */,
 				26DD0989248797D3007B0B02 /* ViewController.swift */,
 				26DD098B248797D3007B0B02 /* Main.storyboard */,
 				26DD098E248797D5007B0B02 /* Assets.xcassets */,
@@ -211,7 +211,7 @@
 			files = (
 				26DD098A248797D3007B0B02 /* ViewController.swift in Sources */,
 				26DD0986248797D3007B0B02 /* AppDelegate.swift in Sources */,
-				26277E07248F330F0020644C /* semiModalViewController2.swift in Sources */,
+				26277E07248F330F0020644C /* SemiModalViewController.swift in Sources */,
 				26DD0988248797D3007B0B02 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
