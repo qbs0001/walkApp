@@ -414,7 +414,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
                         self.semiModalViewController.infoLabel.text = self.semiModalViewController.infoLabel.text! + "\n" + DateUtils.stringFromDate(date: modifiedDate, format: "HH時mm分") + "到着"
                         
                         // 開始ボタン押下時のセレクター
-                        self.semiModalViewController.startButton.addTarget(self, action: #selector(self.pushStartButton), for: .touchUpInside)
+                        self.semiModalViewController.startButton.addTarget(self, action: #selector(self.pushStartButton), for: .touchDown)
                         // 開始ボタンを表示する
                         self.semiModalViewController.startButton.isHidden = false
                         
@@ -699,8 +699,12 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     @objc func pushStartButton(sender: UIButton){
         print("startbutton pushed.")
         
+        if let generator = impactFeedback as? UIImpactFeedbackGenerator {
+            generator.impactOccurred()
+        }
+        
         // 終了ボタン押下時のセレクター
-        self.semiModalViewController.endButton.addTarget(self, action: #selector(self.pushEndButton), for: .touchUpInside)
+        self.semiModalViewController.endButton.addTarget(self, action: #selector(self.pushEndButton), for: .touchDown)
         // 開始ボタンが押されたら、終了ボタンを表示
         self.semiModalViewController.endButton.isHidden = false
         // 開始ボタンを非表示
@@ -713,6 +717,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     
     @objc func pushEndButton(sender: UIButton){
         print("endbutton pushed.")
+        
+        if let generator = impactFeedback as? UIImpactFeedbackGenerator {
+            generator.impactOccurred()
+        }
         
         // 終了ボタンが押されたら、終了ボタンを非表示
         self.semiModalViewController.endButton.isHidden = true
