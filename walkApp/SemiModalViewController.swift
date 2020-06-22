@@ -29,6 +29,7 @@ class SemiModalViewController: UIViewController {
         // ラベルをサブモーダルに追加する
         view.addSubview(hosuLabel)
         view.addSubview(infoLabel)
+        
     }
 
     func editLabel() {

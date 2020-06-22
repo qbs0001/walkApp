@@ -58,7 +58,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     var kcal: Int = 0
     
     // 待ちセマフォ
-    //var semaphore: DispatchSemaphore!
+    // var semaphore: DispatchSemaphore!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -311,7 +311,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         annotationArray = []
         
         // アノテーションを生成
-        var annotation :MKPointAnnotation!
+        var annotation: MKPointAnnotation!
         
         // 配列分繰り返す
         for i in 0..<coordinatesArray.count {
@@ -332,11 +332,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
             
             // マップにピンを立てる
             mapView.addAnnotation(annotation)
-
         }
         
         // スタート地点とゴール地点の標高差を取得する
-        getElevation(startPoint: CLLocationCoordinate2DMake(coordinatesArray[0]["lat"] as! CLLocationDegrees, coordinatesArray[0]["lon"] as! CLLocationDegrees),goalPoint: CLLocationCoordinate2DMake(coordinatesArray[1]["lat"] as! CLLocationDegrees, coordinatesArray[1]["lon"] as! CLLocationDegrees),annotation: annotation)
+        getElevation(startPoint: CLLocationCoordinate2DMake(coordinatesArray[0]["lat"] as! CLLocationDegrees, coordinatesArray[0]["lon"] as! CLLocationDegrees), goalPoint: CLLocationCoordinate2DMake(coordinatesArray[1]["lat"] as! CLLocationDegrees, coordinatesArray[1]["lon"] as! CLLocationDegrees), annotation: annotation)
         
         // ルート用の変数を生成
         var myRoute: MKRoute!
@@ -432,21 +431,20 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     // 標高値の取得
     // 国土地理院「電子国土ポータル」のAPIを使用
     // https://portal.cyberjapan.jp/help/development.html#api
-    func getElevation(startPoint: CLLocationCoordinate2D, goalPoint: CLLocationCoordinate2D,annotation: MKPointAnnotation){
-        
+    func getElevation(startPoint: CLLocationCoordinate2D, goalPoint: CLLocationCoordinate2D, annotation: MKPointAnnotation) {
         // 非同期のグループ作成
         let dispatchGroup = DispatchGroup()
         // 非同期実行の準備
-        let dispatchQueue = DispatchQueue(label: "queue", attributes:  .concurrent)
+        let dispatchQueue = DispatchQueue(label: "queue", attributes: .concurrent)
         
-        var startElevation:Double!
-        var goalElevation :Double!
+        var startElevation: Double!
+        var goalElevation: Double!
         
         // スタート地点の標高取得の非同期処理
         dispatchGroup.enter()
         dispatchQueue.async {
             // 待ち用のセマフォ
-            //semaphore = DispatchSemaphore(value: 0)
+            // semaphore = DispatchSemaphore(value: 0)
             // HTTPリクエスト設定
             let add =
                 "https://cyberjapandata2.gsi.go.jp/" +
@@ -467,13 +465,13 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
                     // JSONから標高を取り出す
                     if let unwrapped = obj["elevation"] {
                         // 標高が取得できない地点は、ABENDするのでダウンキャストチェックする
-                        if let unwrappedDouble = unwrapped as? Double{
+                        if let unwrappedDouble = unwrapped as? Double {
                             startElevation = unwrappedDouble
                         } else {
                             // 取得できなかった時は、標高は999.999にする
                             startElevation = 999.999
                         }
-                            self.mapView.addAnnotation(annotation)
+                        self.mapView.addAnnotation(annotation)
                         dispatchGroup.leave()
                     }
                     
@@ -481,7 +479,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
                     print(e)
                 }
                 // 待ちセマフォを解除
-                //self.semaphore.signal()
+                // self.semaphore.signal()
             }
             // 非同期通信を開始
             res.resume()
@@ -491,7 +489,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         dispatchGroup.enter()
         dispatchQueue.async {
             // 待ち用のセマフォ
-            //semaphore = DispatchSemaphore(value: 0)
+            // semaphore = DispatchSemaphore(value: 0)
             // HTTPリクエスト設定
             let add =
                 "https://cyberjapandata2.gsi.go.jp/" +
@@ -512,13 +510,13 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
                     // JSONから標高を取り出す
                     if let unwrapped = obj["elevation"] {
                         // 標高が取得できない地点は、ABENDするのでダウンキャストチェックする
-                        if let unwrappedDouble = unwrapped as? Double{
+                        if let unwrappedDouble = unwrapped as? Double {
                             goalElevation = unwrappedDouble
                         } else {
                             // 取得できなかった時は、標高は999.999にする
                             goalElevation = 999.999
                         }
-                            self.mapView.addAnnotation(annotation)
+                        self.mapView.addAnnotation(annotation)
                         dispatchGroup.leave()
                     }
                     
@@ -526,21 +524,20 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
                     print(e)
                 }
                 // 待ちセマフォを解除
-                //self.semaphore.signal()
+                // self.semaphore.signal()
             }
             // 非同期通信を開始
             res.resume()
         }
         
         // ２つの非同期処理が完了したら、標高差を求めて設定する
-        dispatchGroup.notify(queue: .main){
-            
+        dispatchGroup.notify(queue: .main) {
             if (startElevation == 999.999) || (goalElevation == 999.999) {
                 // 取得できなかった時は、標高差はハイフンにする
                 annotation.title = annotation.title! + "\n" + "標高差:-----m"
             } else {
-                //スタート地点とゴール地点の標高差を求める（小数点１桁）
-                let elevation = String(round((goalElevation - startElevation)*10) / 10)
+                // スタート地点とゴール地点の標高差を求める（小数点１桁）
+                let elevation = String(round((goalElevation - startElevation) * 10) / 10)
                 print("DBG標高差\(elevation)")
                 // アノテーションに標高を追加する
                 annotation.title = annotation.title! + "\n" + "標高差:" + elevation + "m"
