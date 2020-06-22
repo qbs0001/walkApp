@@ -24,24 +24,23 @@ class SemiModalViewController: UIViewController {
 
         // ラベルの初期値
         hosuLabel.text = ""
-        infoLabel.text = ""
+        infoLabel.numberOfLines = 2
+        infoLabel.text = "" + "\n" + ""
         // ラベルの配置
         editLabel()
 
         // ラベルをサブモーダルに追加する
         view.addSubview(hosuLabel)
         view.addSubview(infoLabel)
-        
+
         // 開始・終了ボタンの配置
         editButton()
         // デフォルトは、非表示
         startButton.isHidden = true
         endButton.isHidden = true
-        // 開始ボタンをサブモーダルに追加する
+        // 開始・終了ボタンをサブモーダルに追加する
         view.addSubview(startButton)
-        // 終了ボタンをサブモーダルに追加する
         view.addSubview(endButton)
-        
     }
 
     func editLabel() {
@@ -59,7 +58,7 @@ class SemiModalViewController: UIViewController {
         // 幅は、サブモーダルの真ん中に配置
         let widthGap1 = (width - Float(hosuLabel.frame.width)) / 2
         hosuLabel.frame = CGRect(x: CGFloat(widthGap1),
-                                 y: 40,
+                                 y: 30,
                                  width: hosuLabel.frame.width,
                                  height: hosuLabel.frame.height)
         // 文字色
@@ -73,41 +72,35 @@ class SemiModalViewController: UIViewController {
         // 幅は、サブモーダルの真ん中に配置
         let widthGap2 = (width - Float(infoLabel.frame.width)) / 2
         infoLabel.frame = CGRect(x: CGFloat(widthGap2),
-                                 y: 80,
+                                 y: 70,
                                  width: infoLabel.frame.width,
                                  height: infoLabel.frame.height)
     }
-    
+
     func editButton() {
-        
         // デバイスの画面サイズを取得する
         let dispSize: CGSize = UIScreen.main.bounds.size
         // 画面の幅
         let width = Int(dispSize.width)
-        
+
         // 開始ボタンの位置
         startButton.frame = CGRect(x: (width * 4 / 5) - 10, y: 50, width: 60, height: 40)
         // 開始ボタンの背景
         startButton.backgroundColor = .systemBlue
-        
+        // 開始ボタンのテキスト
         startButton.setTitle("出 発", for: .normal)
         startButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 23)
         startButton.alpha = 0.9
-        
+
         // 終了ボタンの位置
         endButton.frame = CGRect(x: (width * 4 / 5) - 10, y: 50, width: 60, height: 40)
         // 終了ボタンの背景
         endButton.backgroundColor = .red
-        
+        // 終了ボタンのテキスト
         endButton.setTitle("終 了", for: .normal)
         endButton.titleLabel?.font = UIFont.boldSystemFont(ofSize: 23)
         endButton.alpha = 0.7
-
-        
     }
-    
-    
-
 
     /*
      // MARK: - Navigation

@@ -406,9 +406,16 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
                         self.semiModalViewController.hosuLabel.text = "\(self.hosu)歩"
                         self.semiModalViewController.infoLabel.text = "\(self.time)分　\(self.dist)m　\(self.kcal)kcal　"
                         
-                        // 決定ボタン押下時のセレクター
+                        // 日付の取得
+                        let day = Date()
+                        // 所要時間を加算
+                        let modifiedDate = Calendar.current.date(byAdding: .minute, value: self.time, to: day)!
+                        // 到着時刻を設定
+                        self.semiModalViewController.infoLabel.text = self.semiModalViewController.infoLabel.text! + "\n" + DateUtils.stringFromDate(date: modifiedDate, format: "HH時mm分") + "到着"
+                        
+                        // 開始ボタン押下時のセレクター
                         self.semiModalViewController.startButton.addTarget(self, action: #selector(self.pushStartButton), for: .touchUpInside)
-                        // 決定ボタンを表示する
+                        // 開始ボタンを表示する
                         self.semiModalViewController.startButton.isHidden = false
                         
                         // 位置情報を最新化する
@@ -629,19 +636,20 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         return routeRenderer
     }
     
+    // ボタン押下時の振動
     private lazy var impactFeedback: Any? = {
         // styleは.light, .medium, heavyの３種類がある
         let generator: UIFeedbackGenerator = UIImpactFeedbackGenerator(style: .medium)
         generator.prepare()
         return generator
     }()
-    
+    // アラート系の振動
     private lazy var notificationFeedback: Any? = {
         let generator: UIFeedbackGenerator = UINotificationFeedbackGenerator()
         generator.prepare()
         return generator
     }()
-    
+    // セレクト系の振動
     private lazy var selectionFeedback: Any? = {
         let generator: UIFeedbackGenerator = UISelectionFeedbackGenerator()
         generator.prepare()
@@ -676,7 +684,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
             
         default: break
         }
-        
+        // スライドバーを動かした時に振動させる
         if let generator = selectionFeedback as? UISelectionFeedbackGenerator {
             generator.selectionChanged()
         }
@@ -693,9 +701,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         
         // 終了ボタン押下時のセレクター
         self.semiModalViewController.endButton.addTarget(self, action: #selector(self.pushEndButton), for: .touchUpInside)
-        // 決定ボタンが押されたら、終了ボタンを表示
+        // 開始ボタンが押されたら、終了ボタンを表示
         self.semiModalViewController.endButton.isHidden = false
-        // 決定ボタンを非表示
+        // 開始ボタンを非表示
         self.semiModalViewController.startButton.isHidden = true
         // ウォークボタンを非表示
         walkButton.isHidden = true
@@ -718,15 +726,15 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         mapView.removeOverlays(overlayArray)
         overlayArray = []
                 
-        // ラベル変数のテキストを更新する
+        // ラベル変数のテキストを更新する（初期化）
         self.semiModalViewController.hosuLabel.text = ""
         self.semiModalViewController.infoLabel.text = ""
                 
-        // 位置情報を最新化する
+        // 位置情報を最新化する（初期化）
         self.semiModalViewController.editLabel()
         // サブモーダルを更新する
         self.floatingPanelController.reloadInputViews()
-        // サブモーダルに情報を表示するため、位置をハーフにする
+        // サブモーダルの情報を非表示とするため、位置をチップにする
         self.floatingPanelController.move(to: .tip, animated: true)
         
         let dispSize: CGSize = UIScreen.main.bounds.size
@@ -741,6 +749,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         // スライダーラベルの位置
         sliderLabel.frame = CGRect(x: (width * 3 / 4) - 40, y: height - 70, width: 120, height: 20)
         
+        // スライダーの値を初期値とする
         walkSlider.value = 5
         sliderLabel.text = String("Mid-Range")
         
@@ -826,5 +835,20 @@ class CustomFloatingPanelLayout: FloatingPanelLayout {
     var supportedPositions: Set<FloatingPanelPosition> {
         // fullは、現在使わない
         return [.half, .tip]
+    }
+}
+class DateUtils {
+    class func dateFromString(string: String, format: String) -> Date {
+        let formatter: DateFormatter = DateFormatter()
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.dateFormat = format
+        return formatter.date(from: string)!
+    }
+
+    class func stringFromDate(date: Date, format: String) -> String {
+        let formatter: DateFormatter = DateFormatter()
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.dateFormat = format
+        return formatter.string(from: date)
     }
 }
