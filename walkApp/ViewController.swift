@@ -57,6 +57,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     var dist: Int = 0
     var kcal: Int = 0
     
+    // 終了ボタン
+    var endButton = UIButton()
+    
     // 待ちセマフォ
     // var semaphore: DispatchSemaphore!
     
@@ -200,13 +203,39 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         // ウォークボタンを丸くする
         walkButton.layer.cornerRadius = 60 * 0.5
         walkButton.clipsToBounds = true
-        // 　ウォークボタンタップ時の画像反転を抑制
+        // ウォークボタンタップ時の画像反転を抑制
         walkButton.adjustsImageWhenHighlighted = false
         
-        // 　ウォークスライダーの位置
+        // ウォークスライダーの位置
         walkSlider.frame = CGRect(x: (width * 3 / 4) - 40, y: height - 110, width: 120, height: 60)
         // スライダーラベルの位置
         sliderLabel.frame = CGRect(x: (width * 3 / 4) - 40, y: height - 70, width: 120, height: 20)
+        
+        
+        // 終了ボタンの位置
+        endButton.frame = CGRect(x: (width * 1 / 17), y: 40, width: 40, height: 40)
+        
+        // 終了ボタンの画像
+        let buttonImage = UIImage(systemName: "xmark.circle.fill")
+        
+        endButton.setImage(buttonImage, for: .normal)
+        endButton.imageView?.contentMode = .scaleAspectFit
+        endButton.contentHorizontalAlignment = .fill
+        endButton.contentVerticalAlignment = .fill
+        
+        // 終了ボタンの色は、赤で半透明
+        endButton.tintColor = (.gray)
+        endButton.alpha = 0.5
+        
+        // 終了ボタン押下時のセレクター
+        endButton.addTarget(self, action: #selector(self.pushEndButton), for: .touchUpInside)
+        
+        // デフォルトは、非表示
+        endButton.isHidden = true
+        // 終了ボタンを画面に追加する
+        view.addSubview(endButton)
+        
+        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -404,6 +433,12 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
                         // ラベル変数のテキストを更新する
                         self.semiModalViewController.hosuLabel.text = "\(self.hosu)歩"
                         self.semiModalViewController.infoLabel.text = "\(self.time)分　\(self.dist)m　\(self.kcal)kcal　"
+                        
+                        // 決定ボタン押下時のセレクター
+                        self.semiModalViewController.startButton.addTarget(self, action: #selector(self.pushStartButton), for: .touchUpInside)
+                        // 決定ボタンを表示する
+                        self.semiModalViewController.startButton.isHidden = false
+                        
                         // 位置情報を最新化する
                         self.semiModalViewController.editLabel()
                         // サブモーダルを更新する
@@ -679,6 +714,74 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         // 反映
         mapView.setRegion(region, animated: true)
     }
+    
+    
+    @objc func pushStartButton(sender: UIButton){
+        print("startbutton pushed.")
+        
+        // 決定ボタンが押されたら、終了ボタンを表示
+        endButton.isHidden = false
+        // 決定ボタンを非表示
+        self.semiModalViewController.startButton.isHidden = true
+        // ウォークボタンを非表示
+        walkButton.isHidden = true
+        
+    }
+    
+    
+    @objc func pushEndButton(sender: UIButton){
+        print("endbutton pushed.")
+        
+        // 終了ボタンが押されたら、終了ボタンを非表示
+        endButton.isHidden = true
+        // ウォークボタンを表示
+        walkButton.isHidden = false
+        
+        // 前回設定したピンを削除する
+        mapView.removeAnnotations(annotationArray)
+        annotationArray = []
+        // 前回表示したオーバーレイを削除する
+        mapView.removeOverlays(overlayArray)
+        overlayArray = []
+                
+        // ラベル変数のテキストを更新する
+        self.semiModalViewController.hosuLabel.text = ""
+        self.semiModalViewController.infoLabel.text = ""
+                
+        // 位置情報を最新化する
+        self.semiModalViewController.editLabel()
+        // サブモーダルを更新する
+        self.floatingPanelController.reloadInputViews()
+        // サブモーダルに情報を表示するため、位置をハーフにする
+        self.floatingPanelController.move(to: .tip, animated: true)
+        
+        let dispSize: CGSize = UIScreen.main.bounds.size
+        let height = Int(dispSize.height)
+        let width = Int(dispSize.width)
+        
+        // ボタンの位置をtipに調整する
+        walkButton.frame = CGRect(x: (width / 2) - 30, y: height - 110, width: 60, height: 60)
+        trakingBtn.frame = CGRect(x: 15, y: height - 100, width: 40, height: 40)
+        // 　ウォークスライダーの位置
+        walkSlider.frame = CGRect(x: (width * 3 / 4) - 40, y: height - 110, width: 120, height: 60)
+        // スライダーラベルの位置
+        sliderLabel.frame = CGRect(x: (width * 3 / 4) - 40, y: height - 70, width: 120, height: 20)
+        
+        walkSlider.value = 5
+        sliderLabel.text = String("Mid-Range")
+        
+        // マップの中心を配列の一番目に
+        let coordinate = CLLocationCoordinate2DMake(Double(latitudeNow)!, Double(longitudeNow)!)
+        // マップの範囲
+        let span = MKCoordinateSpan(latitudeDelta: 0.016, longitudeDelta: 0.016)
+        // 中心と範囲を設定
+        let region = MKCoordinateRegion(center: coordinate, span: span)
+        // 反映
+        mapView.setRegion(region, animated: true)
+        
+    }
+    
+    
 }
 
 // FloatingPanelControllerDelegate を実装してカスタマイズしたレイアウトを返す

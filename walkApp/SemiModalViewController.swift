@@ -11,6 +11,7 @@ import UIKit
 class SemiModalViewController: UIViewController {
     var hosuLabel = UILabel()
     var infoLabel = UILabel()
+    var startButton = UIButton()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,6 +31,12 @@ class SemiModalViewController: UIViewController {
         view.addSubview(hosuLabel)
         view.addSubview(infoLabel)
         
+        // 決定ボタンの配置
+        editButton()
+        // デフォルトは、非表示
+        startButton.isHidden = true
+        // 決定ボタンをサブモーダルに追加する
+        view.addSubview(startButton)
     }
 
     func editLabel() {
@@ -65,6 +72,34 @@ class SemiModalViewController: UIViewController {
                                  width: infoLabel.frame.width,
                                  height: infoLabel.frame.height)
     }
+    
+    func editButton() {
+        
+        // デバイスの画面サイズを取得する
+        let dispSize: CGSize = UIScreen.main.bounds.size
+        // 画面の幅
+        let width = Int(dispSize.width)
+        
+        // 決定ボタンの位置
+        startButton.frame = CGRect(x: (width * 4 / 5) - 20, y: 40, width: 60, height: 60)
+        // 決定ボタンの背景
+        startButton.backgroundColor = .white
+        
+        // 決定ボタンの画像
+        let buttonImage = UIImage(systemName: "checkmark.rectangle.fill")
+        
+        startButton.setImage(buttonImage, for: .normal)
+        startButton.imageView?.contentMode = .scaleAspectFit
+        startButton.contentHorizontalAlignment = .fill
+        startButton.contentVerticalAlignment = .fill
+        
+        startButton.alpha = 0.9
+
+        
+    }
+    
+    
+
 
     /*
      // MARK: - Navigation
