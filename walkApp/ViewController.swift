@@ -181,7 +181,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         // 画面の幅
         let width = Int(dispSize.width)
         // トラッキングボタンを画面の左下に追加
-        trakingBtn.frame = CGRect(x: 15, y: height - 100, width: 40, height: 40)
+        trakingBtn.frame = CGRect(x: 15, y: height - 125, width: 40, height: 40)
         trakingBtn.layer.backgroundColor = UIColor(white: 1, alpha: 0.5).cgColor
         view.addSubview(trakingBtn)
         
@@ -194,7 +194,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         view.addSubview(scale)
         
         // ウォークボタンの位置
-        walkButton.frame = CGRect(x: (width / 2) - 30, y: height - 110, width: 60, height: 60)
+        walkButton.frame = CGRect(x: (width / 2) - 30, y: height - 135, width: 60, height: 60)
         // ウォークボタンの背景
         walkButton.backgroundColor = .white
         // ウォークボタンを丸くする
@@ -204,9 +204,9 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         walkButton.adjustsImageWhenHighlighted = false
         
         // ウォークスライダーの位置
-        walkSlider.frame = CGRect(x: (width * 3 / 4) - 40, y: height - 110, width: 120, height: 60)
+        walkSlider.frame = CGRect(x: (width * 3 / 4) - 40, y: height - 135, width: 120, height: 60)
         // スライダーラベルの位置
-        sliderLabel.frame = CGRect(x: (width * 3 / 4) - 40, y: height - 70, width: 120, height: 20)
+        sliderLabel.frame = CGRect(x: (width * 3 / 4) - 40, y: height - 95, width: 120, height: 20)
         
     }
     
@@ -219,6 +219,13 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
     
     // ウォークボタンが押下された時
     @IBAction func walkButtonTap(_ sender: Any) {
+
+        if latitudeNow == "" || longitudeNow == "" {
+            // 起動時の座標を設定
+            self.latitudeNow = String((locManager.location?.coordinate.latitude)!)
+            self.longitudeNow = String((locManager.location?.coordinate.longitude)!)
+        }
+        
         print("DBG\(latitudeNow)")
         print("DBG\(longitudeNow)")
         
@@ -418,18 +425,23 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
                         // 開始ボタンを表示する
                         self.semiModalViewController.startButton.isHidden = false
                         
+                        // サブモーダルの位置に合わせて、各種ボタンの位置を調整する
+                        let dispSize: CGSize = UIScreen.main.bounds.size
+                        let height = Int(dispSize.height)
+                        let width = Int(dispSize.width)
+                        
+                        // 開始ボタンの位置を調整
+                        self.semiModalViewController.startButton.frame = CGRect(x: (width * 4 / 5) - 10, y: 50, width: 60, height: 40)
+                        // 終了ボタンの位置を調整
+                        self.semiModalViewController.endButton.frame = CGRect(x: (width * 4 / 5) - 10, y: 50, width: 60, height: 40)
+                        
                         // 位置情報を最新化する
                         self.semiModalViewController.editLabel()
                         // サブモーダルを更新する
                         self.floatingPanelController.reloadInputViews()
                         // サブモーダルに情報を表示するため、位置をハーフにする
                         self.floatingPanelController.move(to: .half, animated: true)
-                        
-                        // サブモーダルの位置に合わせて、各種ボタンの位置を調整する
-                        let dispSize: CGSize = UIScreen.main.bounds.size
-                        let height = Int(dispSize.height)
-                        let width = Int(dispSize.width)
-                        
+                                                
                         self.walkButton.frame = CGRect(x: (width / 2) - 30, y: height - 210, width: 60, height: 60)
                         self.trakingBtn.frame = CGRect(x: 15, y: height - 195, width: 40, height: 40)
                         // 　ウォークスライダーの位置
@@ -712,6 +724,29 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         // ウォークボタンを非表示
         walkButton.isHidden = true
         
+        // サブモーダルの情報を非表示とするため、位置をチップにする
+        self.floatingPanelController.move(to: .tip, animated: true)
+        
+        let dispSize: CGSize = UIScreen.main.bounds.size
+        let height = Int(dispSize.height)
+        let width = Int(dispSize.width)
+        
+        // ボタンの位置をtipに調整する
+        walkButton.frame = CGRect(x: (width / 2) - 30, y: height - 135, width: 60, height: 60)
+        trakingBtn.frame = CGRect(x: 15, y: height - 125, width: 40, height: 40)
+        // ウォークスライダーの位置
+        walkSlider.frame = CGRect(x: (width * 3 / 4) - 40, y: height - 135, width: 120, height: 60)
+        // スライダーラベルの位置
+        sliderLabel.frame = CGRect(x: (width * 3 / 4) - 40, y: height - 95, width: 120, height: 20)
+        
+        // 開始ボタンの位置を調整
+        self.semiModalViewController.startButton.frame = CGRect(x: (width * 4 / 5) - 10, y: 15, width: 60, height: 40)
+        // 終了ボタンの位置を調整
+        self.semiModalViewController.endButton.frame = CGRect(x: (width * 4 / 5) - 10, y: 15, width: 60, height: 40)
+        // サブモーダルを更新する
+        self.floatingPanelController.reloadInputViews()
+        
+        
     }
     
     
@@ -750,12 +785,12 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         let width = Int(dispSize.width)
         
         // ボタンの位置をtipに調整する
-        walkButton.frame = CGRect(x: (width / 2) - 30, y: height - 110, width: 60, height: 60)
-        trakingBtn.frame = CGRect(x: 15, y: height - 100, width: 40, height: 40)
+        walkButton.frame = CGRect(x: (width / 2) - 30, y: height - 135, width: 60, height: 60)
+        trakingBtn.frame = CGRect(x: 15, y: height - 125, width: 40, height: 40)
         // ウォークスライダーの位置
-        walkSlider.frame = CGRect(x: (width * 3 / 4) - 40, y: height - 110, width: 120, height: 60)
+        walkSlider.frame = CGRect(x: (width * 3 / 4) - 40, y: height - 135, width: 120, height: 60)
         // スライダーラベルの位置
-        sliderLabel.frame = CGRect(x: (width * 3 / 4) - 40, y: height - 70, width: 120, height: 20)
+        sliderLabel.frame = CGRect(x: (width * 3 / 4) - 40, y: height - 95, width: 120, height: 20)
         
         // スライダーの値を初期値とする
         walkSlider.value = 5
@@ -791,12 +826,19 @@ extension ViewController: FloatingPanelControllerDelegate {
         case .tip:
             print("tip")
             // ボタンの位置をtipに調整する
-            walkButton.frame = CGRect(x: (width / 2) - 30, y: height - 110, width: 60, height: 60)
-            trakingBtn.frame = CGRect(x: 15, y: height - 100, width: 40, height: 40)
+            walkButton.frame = CGRect(x: (width / 2) - 30, y: height - 135, width: 60, height: 60)
+            trakingBtn.frame = CGRect(x: 15, y: height - 125, width: 40, height: 40)
             // 　ウォークスライダーの位置
-            walkSlider.frame = CGRect(x: (width * 3 / 4) - 40, y: height - 110, width: 120, height: 60)
+            walkSlider.frame = CGRect(x: (width * 3 / 4) - 40, y: height - 135, width: 120, height: 60)
             // スライダーラベルの位置
-            sliderLabel.frame = CGRect(x: (width * 3 / 4) - 40, y: height - 70, width: 120, height: 20)
+            sliderLabel.frame = CGRect(x: (width * 3 / 4) - 40, y: height - 95, width: 120, height: 20)
+            // 開始ボタンの位置を調整
+            self.semiModalViewController.startButton.frame = CGRect(x: (width * 4 / 5) - 10, y: 15, width: 60, height: 40)
+            // 終了ボタンの位置を調整
+            self.semiModalViewController.endButton.frame = CGRect(x: (width * 4 / 5) - 10, y: 15, width: 60, height: 40)
+            // サブモーダルを更新する
+            self.floatingPanelController.reloadInputViews()
+            
         case .half:
             print("half")
             // ボタンの位置をhalfに調整する
@@ -806,6 +848,12 @@ extension ViewController: FloatingPanelControllerDelegate {
             walkSlider.frame = CGRect(x: (width * 3 / 4) - 40, y: height - 210, width: 120, height: 60)
             // スライダーラベルの位置
             sliderLabel.frame = CGRect(x: (width * 3 / 4) - 40, y: height - 170, width: 120, height: 20)
+            // 開始ボタンの位置を調整
+            self.semiModalViewController.startButton.frame = CGRect(x: (width * 4 / 5) - 10, y: 50, width: 60, height: 40)
+            // 終了ボタンの位置を調整
+            self.semiModalViewController.endButton.frame = CGRect(x: (width * 4 / 5) - 10, y: 50, width: 60, height: 40)
+            // サブモーダルを更新する
+            self.floatingPanelController.reloadInputViews()
         case .full:
             print("full")
         // fullは、現在使わない
@@ -829,7 +877,7 @@ class CustomFloatingPanelLayout: FloatingPanelLayout {
         switch position {
         case .full: return 16.0
         case .half: return 108.0
-        case .tip: return 10.0
+        case .tip: return 35.0
         default: return nil
         }
     }

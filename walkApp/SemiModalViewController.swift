@@ -58,7 +58,7 @@ class SemiModalViewController: UIViewController {
         // 幅は、サブモーダルの真ん中に配置
         let widthGap1 = (width - Float(hosuLabel.frame.width)) / 2
         hosuLabel.frame = CGRect(x: CGFloat(widthGap1),
-                                 y: 30,
+                                 y: 20,
                                  width: hosuLabel.frame.width,
                                  height: hosuLabel.frame.height)
         // 文字色
