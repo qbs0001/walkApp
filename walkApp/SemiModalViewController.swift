@@ -24,8 +24,8 @@ class SemiModalViewController: UIViewController {
 
         // ラベルの初期値
         hosuLabel.text = ""
-        infoLabel.numberOfLines = 2
-        infoLabel.text = "" + "\n" + ""
+        infoLabel.numberOfLines = 0
+        infoLabel.text = ""
         // ラベルの配置
         editLabel()
 
@@ -44,6 +44,7 @@ class SemiModalViewController: UIViewController {
     }
 
     func editLabel() {
+                
         // 画面の幅を取得
         let width = Float(UIScreen.main.bounds.size.width)
 

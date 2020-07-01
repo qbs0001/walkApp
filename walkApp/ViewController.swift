@@ -265,11 +265,12 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         default: break
         }
         // HUDを表示
+        //SVProgressHUD.setMinimumDismissTimeInterval(0.1)
         SVProgressHUD.show(withStatus: "ルート探索中")
         // 地図を作成
         makeMap()
         // HUDを非表示
-        SVProgressHUD.dismiss(withDelay: 0.1)
+        // SVProgressHUD.dismiss(withDelay: 0.1)
     }
     
     // ボタンが押された時
@@ -409,9 +410,16 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
                         print("DBG距離:\(self.dist)m")
                         print("DBGカロリ:\(self.kcal)kcal")
                         
+                        // たまに改行されるので、位置情報を初期化する
+                        self.semiModalViewController.hosuLabel.text = ""
+                        self.semiModalViewController.infoLabel.text = ""
+                        self.semiModalViewController.infoLabel.numberOfLines = 0
+                        self.semiModalViewController.editLabel()
+                        
                         // ラベル変数のテキストを更新する
                         self.semiModalViewController.hosuLabel.text = "\(self.hosu)歩"
-                        self.semiModalViewController.infoLabel.text = "\(self.time)分　\(self.dist)m　\(self.kcal)kcal　"
+                        
+                        self.semiModalViewController.infoLabel.text = "\(self.time)分　\(self.dist)m　\(self.kcal)kcal"
                         
                         // 日付の取得
                         let day = Date()
@@ -448,6 +456,23 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
                         self.walkSlider.frame = CGRect(x: (width * 3 / 4) - 40, y: height - 210, width: 120, height: 60)
                         // スライダーラベルの位置
                         self.sliderLabel.frame = CGRect(x: (width * 3 / 4) - 40, y: height - 170, width: 120, height: 20)
+                        
+                        // HUDを非表示
+                        SVProgressHUD.dismiss(withDelay: 0.1)
+                        
+                        
+                    } else {
+                        print("DBG：通信エラー")
+                        // HUDを非表示
+                        SVProgressHUD.setMinimumDismissTimeInterval(1.5)
+                        SVProgressHUD.showError(withStatus: "通信に失敗しました。再度お試しください。")
+                        
+                        // 開始・終了ボタンを非表示
+                        self.semiModalViewController.endButton.isHidden = true
+                        self.semiModalViewController.startButton.isHidden = true
+                        // 画面表示を初期化する
+                        self.initView()
+                        
                     }
                 })
             }
@@ -759,6 +784,13 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         
         // 終了ボタンが押されたら、終了ボタンを非表示
         self.semiModalViewController.endButton.isHidden = true
+        // 画面表示を初期化する
+        initView()
+        
+    }
+    
+    func initView() {
+        
         // ウォークボタンを表示
         walkButton.isHidden = false
         
@@ -805,6 +837,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate, MKMapViewDele
         // 反映
         mapView.setRegion(region, animated: true)
         
+        
+        
     }
     
     
@@ -844,7 +878,7 @@ extension ViewController: FloatingPanelControllerDelegate {
             // ボタンの位置をhalfに調整する
             walkButton.frame = CGRect(x: (width / 2) - 30, y: height - 210, width: 60, height: 60)
             trakingBtn.frame = CGRect(x: 15, y: height - 195, width: 40, height: 40)
-            // 　ウォークスライダーの位置
+            // ウォークスライダーの位置
             walkSlider.frame = CGRect(x: (width * 3 / 4) - 40, y: height - 210, width: 120, height: 60)
             // スライダーラベルの位置
             sliderLabel.frame = CGRect(x: (width * 3 / 4) - 40, y: height - 170, width: 120, height: 20)
